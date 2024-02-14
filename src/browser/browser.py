@@ -23,7 +23,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 
-class MyHTMLParser(HTMLParser):
+class Renderer(HTMLParser):
     """
     Instructs Python how we wish to handle the start, middle, and end
     of HTML tags.
@@ -34,7 +34,7 @@ class MyHTMLParser(HTMLParser):
     then 'handle_endtag'.
     """
 
-    def __init__(self, canvas, link_clicked_callback):
+    def __init__(self, canvas, browser):
         """
         Our HTML understanding engine needs to maintain some information
         about what it's already discovered. For example, if we've been
@@ -43,9 +43,7 @@ class MyHTMLParser(HTMLParser):
         """
         super().__init__()
         self.canvas = canvas  # the GUI 'canvas' on which we draw
-        self.link_clicked_callback = link_clicked_callback  # a "callback"
-        # by which we inform the main browser application that a link
-        # was clicked.
+        self.browser = browser  # the main browser object
 
         # Information we are remembering as we draw the page,
         # to influence how we draw subsequent bits of the page.
@@ -70,7 +68,7 @@ class MyHTMLParser(HTMLParser):
         """
         widget_id = link_event.widget.find_withtag('current')[0]
         url = self.known_links[widget_id]
-        self.link_clicked_callback(url)
+        self.browser.link_clicked(url)
 
     def handle_starttag(self, tag, attrs):
         """
@@ -189,7 +187,7 @@ class Browser:
             self.set_status('Status: OK, rendering')
             page_html = response.text
             canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
-            parser = MyHTMLParser(canvas_in_which_to_draw_page, self.link_clicked)
+            parser = Renderer(canvas_in_which_to_draw_page, self)
             parser.feed(page_html)
             self.set_status('Status: OK')
         else:
