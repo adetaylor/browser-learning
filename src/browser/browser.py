@@ -149,7 +149,7 @@ layout = [[sg.Text('URL:'), sg.Input(initial_url, key='-URL-'), sg.Button('Go', 
           [sg.Canvas(size=(300, 300), key='-CANVAS-', expand_x=True,
                      expand_y=True, background_color='White')],
           [sg.Text('Status:', key='-STATUS-')]]
-window = sg.Window('Simple Browser', layout)
+window = sg.Window('Simple Browser', layout, resizable=True)
 
 current_url = None
 
