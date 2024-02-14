@@ -132,6 +132,71 @@ class MyHTMLParser(HTMLParser):
             self.known_links[text_obj_id] = self.current_link
             self.canvas.tag_bind(text_obj_id, '<Button-1>', self.link_clicked)
 
+
+
+class Browser:
+    """
+    The overall state of the browser.
+    """
+    def __init__(self, window):
+        self.current_url = None
+        self.window = window
+
+    def link_clicked(self, url):
+        """
+        Called when a link on the page was clicked.
+        """
+        if not ':' in url:
+            # The hyperlink was a relative URL, e.g. just "some_page.html".
+            # We need to change that into an absolute URL, e.g.
+            # https://en.wikipedia.org/some_page.html
+            # by combining it with parts of the currently-viewed URL
+            current_url_parts = urlparse(self.current_url)
+            url = current_url_parts._replace(path=url).geturl()
+        self.window['-URL-'].update(url)  # fill in the URL bar with the new URL
+        self.window['Go'].click()  # pretend the user clicked Go
+
+
+    def set_status(self, message):
+        """
+        Update the status line at the bottom of the screen
+        """
+        self.window['-STATUS-'].update(message)
+
+
+    def set_window_title(self, message):
+        """
+        Sets the title of the window
+        """
+        self.window.set_title(message)
+
+    def navigate(self, url):
+        """
+        Navigates the browser to a new URL
+        """
+        if not ':' in url:
+            url = 'https://' + url
+            self.window['-URL-'].update(url)
+        sg.user_settings_set_entry('-URL-', url)
+        self.current_url = url
+        self.set_status('Status: loading...')
+        try:
+            response = requests.get(url)
+        except:
+            self.set_status('Status: unable to connect to %s' % url)
+            return
+        if response.ok:
+            self.set_status('Status: OK, rendering')
+            page_html = response.text
+            canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
+            parser = MyHTMLParser(canvas_in_which_to_draw_page, self.link_clicked)
+            parser.feed(page_html)
+            self.set_status('Status: OK')
+        else:
+            self.set_status('Status: web server gave us error code %d' %
+                       response.status_code)
+
+
 #########################################
 # Main program here
 #########################################
@@ -151,29 +216,7 @@ layout = [[sg.Text('URL:'), sg.Input(initial_url, key='-URL-'), sg.Button('Go', 
           [sg.Text('Status:', key='-STATUS-')]]
 window = sg.Window('Simple Browser', layout, resizable=True)
 
-current_url = None
-
-
-def link_clicked(url):
-    """
-    Called when a link on the page was clicked.
-    """
-    if not ':' in url:
-        # The hyperlink was a relative URL, e.g. just "some_page.html".
-        # We need to change that into an absolute URL, e.g.
-        # https://en.wikipedia.org/some_page.html
-        # by combining it with parts of the currently-viewed URL
-        current_url_parts = urlparse(current_url)
-        url = current_url_parts._replace(path=url).geturl()
-    window['-URL-'].update(url)  # fill in the URL bar with the new URL
-    window['Go'].click()  # pretend the user clicked Go
-
-
-def set_status(message):
-    """
-    Update the status line at the bottom of the screen
-    """
-    window['-STATUS-'].update(message)
+browser = Browser(window)
 
 
 # The "event loop". We keep looping through this until
@@ -184,26 +227,6 @@ while True:
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
     if event == 'Go':  # navigate to a new page
-        current_url = values['-URL-']
-        if not ':' in current_url:
-            current_url = 'https://' + current_url
-            window['-URL-'].update(current_url)
-        sg.user_settings_set_entry('-URL-', current_url)
-        set_status('Status: loading...')
-        try:
-            response = requests.get(current_url)
-        except:
-            set_status('Status: unable to connect to %s' % current_url)
-            continue
-        if response.ok:
-            set_status('Status: OK, rendering')
-            page_html = response.text
-            canvas_in_which_to_draw_page = window['-CANVAS-'].TKCanvas
-            parser = MyHTMLParser(canvas_in_which_to_draw_page, link_clicked)
-            parser.feed(page_html)
-            set_status('Status: OK')
-        else:
-            set_status('Status: web server gave us error code %d' %
-                       response.status_code)
+        browser.navigate(values['-URL-'])
 
 window.close()
