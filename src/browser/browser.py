@@ -19,9 +19,9 @@
 import tkinter  # needed for PyDroid3 compatibility
 import PySimpleGUI as sg
 import requests
+import os
 from html.parser import HTMLParser
 from urllib.parse import urlparse
-
 
 class Renderer(HTMLParser):
     """
@@ -178,6 +178,13 @@ class Browser:
         sg.user_settings_set_entry('-URL-', url)
         self.current_url = url
         self.set_status('Status: loading...')
+        if "localhost" in url:
+            # This next line is unimportant - it helps our browser communicate with
+            # our server using encryption in exercise 3b. This isn't needed when
+            # we talk to real websites.
+            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "server/tls_things/server.crt")
+        elif "REQUESTS_CA_BUNDLE" in os.environ:
+            del os.environ["REQUESTS_CA_BUNDLE"]
         try:
             response = requests.get(url)
         except:

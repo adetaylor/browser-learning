@@ -37,10 +37,10 @@ below.
 
 ## Part Three: Encryption
 
-* Exercise 3a: See the web traffic flowing between the mini browser and
+* [docs/exercise3a.md](Exercise 3a): See the web traffic flowing between the mini browser and
   the mini server when using HTTP. See what happens when you try different
   URIs. See what happens when different types of error occur.
-* Exercise 3b: Try the same with HTTPS.
+* [docs/exercise3b.md](Exercise 3b): Try the same with HTTPS.
 
 ## Part Four: Security bugs
 
