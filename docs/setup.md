@@ -21,3 +21,7 @@ python3 -m venv venv
 . venv/bin/activate
 python3 -m pip install -r src/requirements.txt
 ```
+
+## Mac
+
+Install the latest version of Python from [the Python website](https://www.python.org/).

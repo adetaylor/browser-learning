@@ -19,10 +19,10 @@ below.
 
 (actual content to follow...)
 
-* Exercise 1a: Use a real browser. Navigate to [wikipedia](https://en.wikipedia.org).
+* [docs/exercise1a.md](Exercise 1a): Use a real browser. Navigate to [wikipedia](https://en.wikipedia.org).
   View source. Find some things in the HTML.
-* Exercise 1b: Use our mini Python browser. Go to the same place. Look in
-  the code of our Python browser to see how it handles `strong` and `a` tags.
+* [docs/exercise1b.md](Exercise 1b): Use our mini Python browser. Go to the same place. Look in
+  the code of our Python browser to see how it handles `b` and `a` tags.
 * Exercise 1c: Run our mini Python web server. Create your own HTML file.
   See how the browser responds.
 
