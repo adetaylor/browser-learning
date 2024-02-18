@@ -41,5 +41,5 @@ below.
 
 ## Part Four: Security bugs
 
-* [Exercise 4a](docs/exercise4a.md): Find three security bugs hidden in the code of our mini
+* [Exercise 4a](docs/exercise4a.md): Find some security bugs hidden in the code of our mini
   browser.
