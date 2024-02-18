@@ -144,10 +144,10 @@ class Renderer(HTMLParser):
             self.known_links[text_obj_id] = self.current_link
             self.canvas.tag_bind(text_obj_id, '<Button-1>', self.link_clicked)
         # Strikethrough - draw a line over the text but only
-        # if we don't cover more than 25% of it, we don't want it illegible
+        # if we don't cover more than 50% of it, we don't want it illegible
         if self.is_strikethrough:
             fraction_of_text_covered = 6 / self.font_size
-            if fraction_of_text_covered < 0.25:
+            if fraction_of_text_covered <= 0.5:
                 self.canvas.create_line(text_bounding_box[0], text_bounding_box[1] + (self.font_size / 2),
                                         text_bounding_box[2], text_bounding_box[1] + (self.font_size / 2))
 
