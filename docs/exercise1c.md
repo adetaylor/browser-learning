@@ -21,6 +21,11 @@ Then use the browser to visit (exactly):
 `http://localhost:8000/exercise1c.html`
 (change `exercise1c.html` to whatever you called your page)
 
+> [!TIP]
+> You need to run the browser and the server at the same time. You can
+> most easily do that by opening an extra terminal, although an alternative
+> is to type Control-Z and then run `bg` to put the server in the background.
+
 Ensure you can see bold text and hyperlinks.
 
 What's wrong with the browser we've made?

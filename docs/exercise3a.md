@@ -31,6 +31,10 @@ spy on *all the network traffic*.
 (`tcpdump` means `TCP` dump. `TCP` is the ["transmission control protocol", which
 is an agreement about how computers can communicate over the internet.](https://en.wikipedia.org/wiki/Transmission_Control_Protocol))
 
+## Getting started
+
+Make an HTML page within `src/server/pages/crush.html` with your secret crush, in HTML.
+
 ## Running `tcpdump`
 
 The computer you're using probably has several **interfaces**. That is, ways
@@ -42,6 +46,13 @@ Run this command to find out what interfaces you have:
 ```
 sudo tcpdump -D
 ```
+
+> [!TIP]
+> Like in exercise 1, you need to run several commands at once. Once
+> a command is running, the terminal won't act on other commands you
+> give it. You can create
+> several terminal windows to run several commands, or after you've run a
+> command you can press Control-Z and then run the command `bg`
 
 Hopefully, one of them is labelled "loopback". That's the one we want today,
 which enables us to spy on a browser and server running on your computer.
@@ -55,19 +66,22 @@ sudo tcpdump -i lo0 -A 'tcp port 8000'
 
 (You might need to swap `lo0` with whatever your loopback interface was called.)
 
+> [!TIP]
+> You can press the Up arrow to edit a command you previously ran.
+
 Imagine you're doing this on a computer that's somewhere in between the browser
 and server. It would work just the same way.
 
 ## Spying on an HTTP request
 
-Run the simple web browser. Navigate to `http://localhost:8000/exercise1b.html`.
+Run the simple web browser. Navigate to `http://localhost:8000/crush.html`.
 
 You should see the HTTP request go past, and the response.
 
 Here's an example request (yours will look slightly different):
 
 ```
-GET /exercise1b.html HTTP/1.1
+GET /crush.html HTTP/1.1
 Host: localhost:8000
 User-Agent: python-requests/2.31.0
 Accept-Encoding: gzip, deflate
@@ -87,12 +101,10 @@ Last-Modified: Fri, 16 Feb 2024 16:13:49 GMT
 
 <html>
 <head>
-<title>Here's a simple web page</title>
+<title>About my crush</title>
 </head>
 <body>
-<h1>Here's a simple web page</h1>
-<p>This is a paragraph of text.</p>
-<p>And this is another paragraph of text. It has some <b>bold text</b>. It also has a <a href="exercise1b-anotherpage.html">link to another page</a> which you can click in the browser.</p>
+<p>My secret crush is Elsa from Frozen.</p>
 </body>
 </html>
 ```
@@ -100,12 +112,16 @@ Last-Modified: Fri, 16 Feb 2024 16:13:49 GMT
 This is the information flowing over the network between the browser and the
 server.
 
-If you sent your credit card number to a web page, or had your Valentine's
-in the response, anyone doing this on the network would see it.
-
 We're doing it on the same computer as the browser and server, but your
 information passes across dozens of computers on the way, and normally,
 any of them could spy.
+
+# Questions to answer
+
+* In the request, what HTTP version is being used?
+* What's the "content type" of the response from the server? (HTTP servers can
+  supply images, video, and audio as well as HTML - you might have noticed them)
+
 
 What do we do?
 
