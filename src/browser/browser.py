@@ -236,28 +236,30 @@ class Browser:
         self.current_url = url
         self.set_status('Status: loading...')
         self.setup_encryption(url)
+        # Connect over the network to a web server to get the HTML
+        # at this URL.
         try:
             response = requests.get(url)
         except:
             self.set_status('Status: unable to connect to %s' % url)
             return
-        if response.ok:
-            self.set_status('Status: OK, rendering')
-            page_html = response.text
-            canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
-            # Create a new object of the Renderer class.
-            # Pass it the canvas that it should draw the page in.
-            renderer = Renderer(canvas_in_which_to_draw_page, self)
-            # This tells the renderer to interpret all the HTML in page_html.
-            # You can't see most of the code which does this because it's
-            # in the library which provides the HTMLParser class. But it will
-            # result in lots of calls to handle_starttag, handle_endtag and
-            # handle_data.
-            renderer.feed(page_html)
-            self.set_status('Status: OK')
-        else:
+        if not response.ok:
             self.set_status('Status: web server gave us error code %d' %
                             response.status_code)
+            return
+        self.set_status('Status: OK, rendering')
+        page_html = response.text
+        canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
+        # Create a new object of the Renderer class.
+        # Pass it the canvas that it should draw the page in.
+        renderer = Renderer(canvas_in_which_to_draw_page, self)
+        # This tells the renderer to interpret all the HTML in page_html.
+        # You can't see most of the code which does this because it's
+        # in the library which provides the HTMLParser class. But it will
+        # result in lots of calls to handle_starttag, handle_endtag and
+        # handle_data.
+        renderer.feed(page_html)
+        self.set_status('Status: OK')
 
     def setup_encryption(self, url):
         """
