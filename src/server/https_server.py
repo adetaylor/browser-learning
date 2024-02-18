@@ -37,7 +37,7 @@ server_certificate_file = os.path.join(tls_things_dir, "server.pem")
 if not os.path.exists(server_certificate_file):
     if not os.path.exists(tls_things_dir):
         os.makedirs(tls_things_dir)
-    with tempfile.NamedTemporaryFile(delete_on_close=False) as config:
+    with tempfile.NamedTemporaryFile(delete=False) as config:
         config.write(
             b"[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
         config.close()
