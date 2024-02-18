@@ -1,7 +1,5 @@
 # System requirements and setup
 
-(to be much expanded)
-
 ## Mac
 
 You need at least Python 3.11.
@@ -21,6 +19,9 @@ python3 -m venv venv
 . venv/bin/activate
 python3 -m pip install -r src/requirements.txt
 ```
+3. In a browser, fetch the Visual Studio code `.deb` from [this page](https://code.visualstudio.com/download) and then copy
+   the file into the Linux environment
+4. Back in the terminal, run `sudo dpkg -i <name of that .deb file>`
 
 ## Mac
 
