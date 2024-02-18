@@ -212,13 +212,7 @@ class Browser:
         sg.user_settings_set_entry('-URL-', url)
         self.current_url = url
         self.set_status('Status: loading...')
-        if "localhost" in url:
-            # This next line is unimportant - it helps our browser communicate with
-            # our server using encryption in exercise 3b. This isn't needed when
-            # we talk to real websites.
-            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "server/tls_things/server.crt")
-        elif "REQUESTS_CA_BUNDLE" in os.environ:
-            del os.environ["REQUESTS_CA_BUNDLE"]
+        self.setup_encryption(url)
         try:
             response = requests.get(url)
         except:
@@ -242,6 +236,15 @@ class Browser:
             self.set_status('Status: web server gave us error code %d' %
                        response.status_code)
 
+    def setup_encryption(self, url):
+        """
+        Ignore this function - it's used to set up
+        encryption for some of the later exercises.
+        """
+        if "localhost" in url:
+            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "server/tls_things/server.crt")
+        elif "REQUESTS_CA_BUNDLE" in os.environ:
+            del os.environ["REQUESTS_CA_BUNDLE"]
 
 #########################################
 # Main program here
