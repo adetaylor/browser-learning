@@ -27,10 +27,9 @@ below.
 ## Part Two: Building a browser
 
 * [docs/exercise2a.md](Exercise 2a): Add support for italic text in the browser.
-* Exercise 2b: Add support for `h1` or `font color` or similar.
-* Exercise 2c: Add word wrap in the browser. (TBD - might be too hard)
-* Exercise 2d: Add scrolling in the browser. (TBD - might be too hard)
-* Exercise 2e: Invent your own HTML tag. Add it to the browser and to some
+* [docs/exercise2b.md](Exercise 2b): Add support for `h1` or `font color` or similar.
+* [docs/exercise2c.md](Exercise 2c): Add word wrap in the browser. (HARD!)
+* [docs/exercise2d.md](Exercise 2d): Invent your own HTML tag. Add it to the browser and to some
   HTML pages in the server. See how it works end-to-end.
 
 ## Part Three: Encryption
