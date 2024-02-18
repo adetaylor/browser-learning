@@ -24,7 +24,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
-font_size_increases_for_headers_1_to_6 = [10, 6, 4, 3, 2, 1]
+FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
 
 
 class Renderer(HTMLParser):
@@ -118,7 +118,7 @@ class Renderer(HTMLParser):
         # h1...h6 header tags
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
             heading_number = int(tag[1])
-            font_size_difference = font_size_increases_for_headers_1_to_6[heading_number - 1]
+            font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size = self.font_size + font_size_difference
 
     def handle_endtag(self, tag):
@@ -144,7 +144,7 @@ class Renderer(HTMLParser):
             self.y_pos += self.font_size
             self.x_pos = 0
             heading_number = int(tag[1])
-            font_size_difference = font_size_increases_for_headers_1_to_6[heading_number - 1]
+            font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size = self.font_size - font_size_difference
 
     def handle_data(self, data):
