@@ -83,9 +83,8 @@ class Renderer(HTMLParser):
         are the tag, and in the latter case we also have an attr.
         """
         if tag == 'script' or tag == 'style' or tag == 'title':
-            # Stuff inside these two tags isn't actually HTML;
-            # it's JavaScript and CSS. Our browser doesn't support
-            # such things. Ignore.
+            # Stuff inside these tags isn't actually HTML
+            # to display on the screen.
             self.ignore_current_text = True
         if tag == 'b' or tag == 'strong':
             self.is_bold = True
@@ -275,25 +274,26 @@ class Browser:
 # Main program here
 #########################################
 
-
 # Set up the graphical user interface (GUI)
 sg.theme('DarkAmber')
 sg.user_settings_filename(path='.')
 initial_url = sg.user_settings_get_entry(
-    '-URL-', 'https://en.wikipedia.org')  # load the last URL that
-# the user used in this browser, or use wikipedia if they never used it before
+    '-URL-', 'https://en.wikipedia.org')  # find the last URL that
+    # the user used in this browser, or use wikipedia if they never used it before.
+
 # Set up the GUI layout. All the '-SOMETHING-' bits are the names we give
-# each UI control so we can read or modify their contents later.
+# each UI control so we can investigate or modify their contents later.
 layout = [[sg.Text('URL:'), sg.Input(initial_url, key='-URL-'), sg.Button('Go', bind_return_key=True), sg.Exit()],
           [sg.Canvas(size=(300, 300), key='-CANVAS-', expand_x=True,
                      expand_y=True, background_color='White')],
           [sg.Text('Status:', key='-STATUS-')]]
 window = sg.Window('Simple Browser', layout, resizable=True)
 
+# Create the one (and only) example of our Browser class.
 browser = Browser(window)
 
-
-# The "event loop". We keep looping through this until
+# The "event loop". An event is something like a click or the user
+# typing something. Keep handling those events from the user until
 # Exit is clicked or the window is closed.
 while True:
     # See what the user has asked us to do
