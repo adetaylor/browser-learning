@@ -96,7 +96,7 @@ class Renderer(HTMLParser):
                 if tag_name == 'href':
                     self.current_link = tag_value
         if tag == 'meta':  # sometimes sites redirect users to other sites
-            # Looks like <meta http-equiv="refresh" content="0; new-url">
+            # Looks like <meta http-equiv="refresh" content="delay; new-url">
             is_refresh = False
             content = None
             for tag_name, tag_value in attrs:
@@ -111,6 +111,7 @@ class Renderer(HTMLParser):
                     self.browser.set_window_url(parts[1])
                     if parts[0] == '0':  # navigate immediately to the requested URL
                         self.browser.navigate(parts[1])
+                    # Delayed navigations not yet supported by this browser
         if tag == 'small':
             self.font_size -= 1
         if tag == 'big':
