@@ -4,8 +4,11 @@ Inside the `src` directory is another directory called `server`, and inside
 there is `pages`.
 
 Create a new HTML file in there. Use the (few!) types of tag supported by
-the browser. (There are a couple of files already that you can use as
-examples).
+the browser.
+
+You should make sure you know how to add these tags:
+* `a href`
+* `b`
 
 Make it work end-to-end!
 

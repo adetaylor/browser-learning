@@ -58,20 +58,19 @@ class Renderer(HTMLParser):
         self.is_strikethrough = False
         self.font_size = 12
         self.tallest_text_in_previous_line = 0
-        self.current_link = None
+        self.current_link = None # if we're in a <a href=...> hyperlink
         self.known_links = dict()  # stores the relationship between
         # the bits of text shown in the UI (remembered by number)
         # and the URL we want to visit when it's clicked.
-
         # First ensure the canvas is blank.
         self.canvas.delete('all')
 
     def link_clicked(self, link_event):
         """
-        This code is called by the PySimpleGUI canvas when
+        This code is called by the GUI canvas code when
         a link is clicked. We look up which link was clicked
-        and then inform the main application by calling a
-        function that's stored in "self.link_clicked_callback".
+        and then inform the Browser class by calling one of its
+        functions.
         """
         widget_id = link_event.widget.find_withtag('current')[0]
         url = self.known_links[widget_id]
@@ -81,7 +80,8 @@ class Renderer(HTMLParser):
         """
         Handle an HTML start tag, for instance,
         <b> or <a href="foo.html">. In these cases, 'b' and 'a'
-        are the tag, and in the latter case we also have an attr.
+        are the tag, and in the latter case we also have an "attrbute"
+        (attr)
         """
         if tag == 'script' or tag == 'style' or tag == 'title':
             # Stuff inside these tags isn't actually HTML
@@ -112,15 +112,15 @@ class Renderer(HTMLParser):
                     if parts[0] == '0':  # navigate immediately to the requested URL
                         self.browser.navigate(parts[1])
         if tag == 'small':
-            self.font_size = self.font_size - 1
+            self.font_size -= 1
         if tag == 'big':
-            self.font_size = self.font_size + 1
+            self.font_size += 1
         # h1...h6 header tags
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
             self.newline()
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
-            self.font_size = self.font_size + font_size_difference
+            self.font_size += font_size_difference
 
     def handle_endtag(self, tag):
         """
@@ -137,14 +137,14 @@ class Renderer(HTMLParser):
         if tag == 's':
             self.is_strikethrough = False
         if tag == 'small':
-            self.font_size = self.font_size + 1
+            self.font_size += 1
         if tag == 'big':
-            self.font_size = self.font_size - 1
+            self.font_size -= 1
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
             self.newline()
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
-            self.font_size = self.font_size - font_size_difference
+            self.font_size -= font_size_difference
 
     def newline(self):
         """
@@ -156,8 +156,8 @@ class Renderer(HTMLParser):
 
     def handle_data(self, data):
         """
-        Handle some actual text, found in between tag starts
-        and ends or outside of all of them.
+        Handle some actual text, found within a tag or outside them. For example,
+        FOO in <b>FOO</b>.
         """
         data = data.rstrip()
         if self.ignore_current_text or data == '':
@@ -170,6 +170,7 @@ class Renderer(HTMLParser):
         if self.current_link is not None:
             fill = 'blue'
             font = font + ' underline'
+        # Tell our GUI canvas to draw some text! The important bit!
         text_obj_id = self.canvas.create_text(
             self.x_pos, self.y_pos, text=data, fill=fill, font=font, anchor=sg.tk.NW)
         # Work out how wide this text was, so we
