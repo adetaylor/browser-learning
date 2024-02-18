@@ -81,14 +81,11 @@ class Renderer(HTMLParser):
         <b> or <a href="foo.html">. In these cases, 'b' and 'a'
         are the tag, and in the latter case we also have an attr.
         """
-        if tag == 'script' or tag == 'style':
+        if tag == 'script' or tag == 'style' or tag == 'title':
             # Stuff inside these two tags isn't actually HTML;
             # it's JavaScript and CSS. Our browser doesn't support
             # such things. Ignore.
             self.ignore_current_text = True
-        if tag == 'br' or tag == 'p':  # move to a new line
-            self.y_pos += self.font_size
-            self.x_pos = 0
         if tag == 'b' or tag == 'strong':
             self.is_bold = True
         if tag == 's':
@@ -111,7 +108,10 @@ class Renderer(HTMLParser):
         """
         Handle an HTML end tag, for example </a> or </b>
         """
-        if tag == 'script' or tag == 'style':
+        if tag == 'br' or tag == 'p':  # move to a new line
+            self.y_pos += self.font_size
+            self.x_pos = 0
+        if tag == 'script' or tag == 'style' or tag == 'title':
             self.ignore_current_text = False
         if tag == 'b' or tag == 'strong':
             self.is_bold = False
@@ -124,6 +124,8 @@ class Renderer(HTMLParser):
         if tag == 'big':
             self.font_size = self.font_size - 1
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
+            self.y_pos += self.font_size
+            self.x_pos = 0
             heading_number = int(tag[1])
             font_size_difference = font_size_increases_for_headers_1_to_6[heading_number - 1]
             self.font_size = self.font_size - font_size_difference
@@ -160,8 +162,8 @@ class Renderer(HTMLParser):
         if self.is_strikethrough:
             fraction_of_text_covered = 6 / self.font_size
             if fraction_of_text_covered <= 0.5:
-                self.canvas.create_line(text_bounding_box[0], text_bounding_box[1] + (self.font_size / 2),
-                                        text_bounding_box[2], text_bounding_box[1] + (self.font_size / 2))
+                self.canvas.create_line(text_bounding_box[0], text_bounding_box[1] + (self.font_size / 2) - 80,
+                                        text_bounding_box[2], text_bounding_box[1] + (self.font_size / 2) - 80)
 
 
 class Browser:
