@@ -18,15 +18,21 @@ Any of the following counts as a success:
 Rules:
 * You can only do this by altering the HTML content of the web page.
 
+> [!TIP]
+> If you find a bug which makes one website look like another one,
+> maybe you want to involve `src/server/pages/spoofable.html` to make
+> a convincing demo.
+
 There are (at least) three different crashes to find, plus one other bug.
 (There might be others as well!)
 
-## What sorts of things cause crashes?
+## What sorts of things cause security bugs?
 
 * [Buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow)
 * [Divide by zero](https://en.wikipedia.org/wiki/Division_by_zero)
 * [Type confusion](https://www.microsoft.com/en-us/security/blog/2015/06/17/understanding-type-confusion-vulnerabilities-cve-2015-0336/)
 * [Use after free](https://en.wikipedia.org/wiki/Dangling_pointer#use_after_free)
+* [Violations of the Line of Death](https://textslashplain.com/2017/01/14/the-line-of-death/) or other spoofing of parts of the user interface that the user might based their security judgements on
 
 ## If you find a security bug in a real browser
 
