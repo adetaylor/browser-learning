@@ -37,7 +37,7 @@ below.
 * [Exercise 3a](docs/exercise3a.md): See the web traffic flowing between the mini browser and
   the mini server when using HTTP. See what happens when you try different
   URIs. See what happens when different types of error occur.
-* [Exercise 3b][docs/exercise3b.md): Try the same with HTTPS.
+* [Exercise 3b](docs/exercise3b.md): Try the same with HTTPS.
 
 ## Part Four: Security bugs
 
