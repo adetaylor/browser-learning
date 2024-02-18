@@ -17,29 +17,29 @@ below.
 
 ## Part One: What's a browser and a server
 
-* [docs/exercise1a.md](Exercise 1a): Use a real browser. Navigate to [wikipedia](https://en.wikipedia.org).
+* [Exercise 1a](docs/exercise1a.md): Use a real browser. Navigate to [wikipedia](https://en.wikipedia.org).
   View source. Find some things in the HTML.
-* [docs/exercise1b.md](Exercise 1b): Use our mini Python browser. Go to the same place. Look in
+* [Exercise 1b](docs/exercise1b.md): Use our mini Python browser. Go to the same place. Look in
   the code of our Python browser to see how it handles `b` and `a` tags.
-* [docs/exercise1c.md](Exercise 1c): Run our mini Python web server. Create your own HTML file.
+* [Exercise 1c](docs/exercise1c.md): Run our mini Python web server. Create your own HTML file.
   See how the browser responds.
 
 ## Part Two: Building a browser
 
-* [docs/exercise2a.md](Exercise 2a): Add support for italic text in the browser.
-* [docs/exercise2b.md](Exercise 2b): Add support for `h1` or `font color` or similar.
-* [docs/exercise2c.md](Exercise 2c): Add word wrap in the browser. (HARD!)
-* [docs/exercise2d.md](Exercise 2d): Invent your own HTML tag. Add it to the browser and to some
+* [Exercise 2a](docs/exercise2a.md): Add support for italic text in the browser.
+* [Exercise 2b](docs/exercise2b.md): Add support for `h1` or `font color` or similar.
+* [Exercise 2a](docs/exercise2c.md): Add word wrap in the browser. (HARD!)
+* [Exercise 2d](docs/exercise2d.md): Invent your own HTML tag. Add it to the browser and to some
   HTML pages in the server. See how it works end-to-end.
 
 ## Part Three: Encryption
 
-* [docs/exercise3a.md](Exercise 3a): See the web traffic flowing between the mini browser and
+* [Exercise 3a](docs/exercise3a.md): See the web traffic flowing between the mini browser and
   the mini server when using HTTP. See what happens when you try different
   URIs. See what happens when different types of error occur.
-* [docs/exercise3b.md](Exercise 3b): Try the same with HTTPS.
+* [Exercise 3b][docs/exercise3b.md): Try the same with HTTPS.
 
 ## Part Four: Security bugs
 
-* Exercise 4a: Find three security bugs hidden in the code of our mini
+* [Exercise 4a](docs/exercise4a.md): Find three security bugs hidden in the code of our mini
   browser.

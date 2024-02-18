@@ -51,6 +51,8 @@ class Renderer(HTMLParser):
         self.x_pos = 0  # where we should draw the next text
         self.ignore_current_text = False
         self.is_bold = False
+        self.is_strikethrough = False
+        self.font_size = 12
         self.current_link = None
         self.known_links = dict()  # stores the relationship between
         # the bits of text shown in the UI (remembered by number)
@@ -82,14 +84,20 @@ class Renderer(HTMLParser):
             # such things. Ignore.
             self.ignore_current_text = True
         if tag == 'br' or tag == 'p':  # move to a new line
-            self.y_pos += 12
+            self.y_pos += self.font_size
             self.x_pos = 0
         if tag == 'b' or tag == 'strong':
             self.is_bold = True
+        if tag == 's':
+            self.is_strikethrough = True
         if tag == 'a':  # hyperlink.
             for tag_name, tag_value in attrs:
                 if tag_name == 'href':
                     self.current_link = tag_value
+        if tag == 'small':
+            self.font_size = self.font_size - 1
+        if tag == 'big':
+            self.font_size = self.font_size + 1
 
     def handle_endtag(self, tag):
         """
@@ -101,6 +109,12 @@ class Renderer(HTMLParser):
             self.is_bold = False
         if tag == 'a':
             self.current_link = None
+        if tag == 's':
+            self.is_strikethrough = False
+        if tag == 'small':
+            self.font_size = self.font_size + 1
+        if tag == 'big':
+            self.font_size = self.font_size - 1
 
     def handle_data(self, data):
         """
@@ -111,7 +125,7 @@ class Renderer(HTMLParser):
         if self.ignore_current_text or data == '':
             return
         # Work out what font we'll draw this in.
-        font = 'Helvetica 12'
+        font = 'Helvetica %d' % self.font_size
         if self.is_bold:
             font = font + ' bold'
         fill = 'black'
@@ -129,7 +143,13 @@ class Renderer(HTMLParser):
         if self.current_link is not None:
             self.known_links[text_obj_id] = self.current_link
             self.canvas.tag_bind(text_obj_id, '<Button-1>', self.link_clicked)
-
+        # Strikethrough - draw a line over the text but only
+        # if we don't cover more than 25% of it, we don't want it illegible
+        if self.is_strikethrough:
+            fraction_of_text_covered = 6 / self.font_size
+            if fraction_of_text_covered < 0.25:
+                self.canvas.create_line(text_bounding_box[0], text_bounding_box[1] + (self.font_size / 2),
+                                        text_bounding_box[2], text_bounding_box[1] + (self.font_size / 2))
 
 
 class Browser:
