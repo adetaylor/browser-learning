@@ -23,6 +23,9 @@ import os
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
+# How much bigger to make the font when we come across <h1> to <h6> tags
+font_size_increases_for_headers_1_to_6 = [ 10, 6, 4, 3, 2, 1 ]
+
 class Renderer(HTMLParser):
     """
     Instructs Python how we wish to handle the start, middle, and end
@@ -100,7 +103,9 @@ class Renderer(HTMLParser):
             self.font_size = self.font_size + 1
         # h1...h6 header tags
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
-            self.font_size = self.font_size + (8 - int(tag[1]))
+            heading_number = int(tag[1])
+            font_size_difference = font_size_increases_for_headers_1_to_6[heading_number - 1]
+            self.font_size = self.font_size + font_size_difference
 
     def handle_endtag(self, tag):
         """
@@ -119,7 +124,9 @@ class Renderer(HTMLParser):
         if tag == 'big':
             self.font_size = self.font_size - 1
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
-            self.font_size = self.font_size - (8 - int(tag[1]))
+            heading_number = int(tag[1])
+            font_size_difference = font_size_increases_for_headers_1_to_6[heading_number - 1]
+            self.font_size = self.font_size - font_size_difference
 
     def handle_data(self, data):
         """
