@@ -27,7 +27,7 @@ below.
 ## Part Two: Building a browser
 
 * [Exercise 2a](docs/exercise2a.md): Add support for italic text in the browser.
-* [Exercise 2b](docs/exercise2b.md): Add support for `h1` or `font color` or similar.
+* [Exercise 2b](docs/exercise2b.md): Add support for `font color` or similar.
 * [Exercise 2a](docs/exercise2c.md): Add word wrap in the browser. (HARD!)
 * [Exercise 2d](docs/exercise2d.md): Invent your own HTML tag. Add it to the browser and to some
   HTML pages in the server. See how it works end-to-end.
