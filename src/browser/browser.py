@@ -24,7 +24,8 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
-font_size_increases_for_headers_1_to_6 = [ 10, 6, 4, 3, 2, 1 ]
+font_size_increases_for_headers_1_to_6 = [10, 6, 4, 3, 2, 1]
+
 
 class Renderer(HTMLParser):
     """
@@ -94,6 +95,22 @@ class Renderer(HTMLParser):
             for tag_name, tag_value in attrs:
                 if tag_name == 'href':
                     self.current_link = tag_value
+        if tag == 'meta':  # sometimes sites redirect users to other sites
+            # Looks like <meta http-equiv="refresh" content="0; new-url">
+            is_refresh = False
+            content = None
+            for tag_name, tag_value in attrs:
+                if tag_name == 'http-equiv':
+                    if tag_value == 'refresh':
+                        is_refresh = True
+                if tag_name == 'content':
+                    content = tag_value
+            if is_refresh and content is not None:
+                parts = tag_value.split('; ')
+                if len(parts) == 2:
+                    self.browser.set_window_url(parts[1])
+                    if parts[0] == '0':  # navigate immediately to the requested URL
+                        self.browser.navigate(parts[1])
         if tag == 'small':
             self.font_size = self.font_size - 1
         if tag == 'big':
@@ -170,6 +187,7 @@ class Browser:
     """
     The overall state of the browser.
     """
+
     def __init__(self, window):
         self.current_url = None
         self.window = window
@@ -185,9 +203,9 @@ class Browser:
             # by combining it with parts of the currently-viewed URL
             current_url_parts = urlparse(self.current_url)
             url = current_url_parts._replace(path=url).geturl()
-        self.window['-URL-'].update(url)  # fill in the URL bar with the new URL
+        # fill in the URL bar with the new URL
+        self.window['-URL-'].update(url)
         self.window['Go'].click()  # pretend the user clicked Go
-
 
     def set_status(self, message):
         """
@@ -195,12 +213,17 @@ class Browser:
         """
         self.window['-STATUS-'].update(message)
 
-
     def set_window_title(self, message):
         """
         Sets the title of the window
         """
         self.window.set_title(message)
+
+    def set_window_url(self, url):
+        """
+        Sets the URL bar
+        """
+        self.window['-URL-'].update(url)
 
     def navigate(self, url):
         """
@@ -208,7 +231,7 @@ class Browser:
         """
         if not ':' in url:
             url = 'https://' + url
-            self.window['-URL-'].update(url)
+            self.set_window_url(url)
         sg.user_settings_set_entry('-URL-', url)
         self.current_url = url
         self.set_status('Status: loading...')
@@ -234,7 +257,7 @@ class Browser:
             self.set_status('Status: OK')
         else:
             self.set_status('Status: web server gave us error code %d' %
-                       response.status_code)
+                            response.status_code)
 
     def setup_encryption(self, url):
         """
@@ -242,7 +265,8 @@ class Browser:
         encryption for some of the later exercises.
         """
         if "localhost" in url:
-            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "server/tls_things/server.crt")
+            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(
+                os.path.dirname(__file__)), "server/tls_things/server.crt")
         elif "REQUESTS_CA_BUNDLE" in os.environ:
             del os.environ["REQUESTS_CA_BUNDLE"]
 
