@@ -194,8 +194,15 @@ class Browser:
             self.set_status('Status: OK, rendering')
             page_html = response.text
             canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
-            parser = Renderer(canvas_in_which_to_draw_page, self)
-            parser.feed(page_html)
+            # Create a new object of the Renderer class.
+            # Pass it the canvas that it should draw the page in.
+            renderer = Renderer(canvas_in_which_to_draw_page, self)
+            # This tells the renderer to interpret all the HTML in page_html.
+            # You can't see most of the code which does this because it's
+            # in the library which provides the HTMLParser class. But it will
+            # result in lots of calls to handle_starttag, handle_endtag and
+            # handle_data.
+            renderer.feed(page_html)
             self.set_status('Status: OK')
         else:
             self.set_status('Status: web server gave us error code %d' %
