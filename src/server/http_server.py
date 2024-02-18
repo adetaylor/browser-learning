@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +16,12 @@
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
+import os
+
 class PagesDirectoryRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, request, client_address, server):
-        super().__init__(request, client_address, server, directory='pages')
+        pages_dir = os.path.join(os.path.dirname(__file__), "pages")
+        super().__init__(request, client_address, server, directory=pages_dir)
 
 httpd = HTTPServer(('localhost', 8000), PagesDirectoryRequestHandler)
 

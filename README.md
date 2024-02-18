@@ -17,18 +17,16 @@ below.
 
 ## Part One: What's a browser and a server
 
-(actual content to follow...)
-
 * [docs/exercise1a.md](Exercise 1a): Use a real browser. Navigate to [wikipedia](https://en.wikipedia.org).
   View source. Find some things in the HTML.
 * [docs/exercise1b.md](Exercise 1b): Use our mini Python browser. Go to the same place. Look in
   the code of our Python browser to see how it handles `b` and `a` tags.
-* Exercise 1c: Run our mini Python web server. Create your own HTML file.
+* [docs/exercise1c.md](Exercise 1c): Run our mini Python web server. Create your own HTML file.
   See how the browser responds.
 
 ## Part Two: Building a browser
 
-* Exercise 2a: Add support for italic text in the browser.
+* [docs/exercise2a.md](Exercise 2a): Add support for italic text in the browser.
 * Exercise 2b: Add support for `h1` or `font color` or similar.
 * Exercise 2c: Add word wrap in the browser. (TBD - might be too hard)
 * Exercise 2d: Add scrolling in the browser. (TBD - might be too hard)
