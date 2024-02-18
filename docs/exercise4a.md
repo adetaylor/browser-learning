@@ -32,7 +32,7 @@ There are (at least) three different crashes to find, plus one other bug.
 * [Divide by zero](https://en.wikipedia.org/wiki/Division_by_zero)
 * [Type confusion](https://www.microsoft.com/en-us/security/blog/2015/06/17/understanding-type-confusion-vulnerabilities-cve-2015-0336/)
 * [Use after free](https://en.wikipedia.org/wiki/Dangling_pointer#use_after_free)
-* [Violations of the Line of Death](https://textslashplain.com/2017/01/14/the-line-of-death/) or other spoofing of parts of the user interface that the user might based their security judgements on
+* [Violations of the Line of Death](https://textslashplain.com/2017/01/14/the-line-of-death/) or other spoofing of parts of the user interface that the user might base their security judgements on
 
 ## If you find a security bug in a real browser
 
