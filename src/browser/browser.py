@@ -185,7 +185,8 @@ class Renderer(HTMLParser):
 
 class Browser:
     """
-    The overall state of the browser.
+    A class of objects representing the browser overall. At any time there's
+    exactly one of these Browser objects existing.
     """
 
     def __init__(self, window):
@@ -204,7 +205,7 @@ class Browser:
             current_url_parts = urlparse(self.current_url)
             url = current_url_parts._replace(path=url).geturl()
         # fill in the URL bar with the new URL
-        self.window['-URL-'].update(url)
+        self.set_window_url(url)
         self.window['Go'].click()  # pretend the user clicked Go
 
     def set_status(self, message):
