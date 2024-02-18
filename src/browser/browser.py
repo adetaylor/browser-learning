@@ -57,6 +57,7 @@ class Renderer(HTMLParser):
         self.is_bold = False
         self.is_strikethrough = False
         self.font_size = 12
+        self.tallest_text_in_previous_line = 0
         self.current_link = None
         self.known_links = dict()  # stores the relationship between
         # the bits of text shown in the UI (remembered by number)
@@ -116,6 +117,7 @@ class Renderer(HTMLParser):
             self.font_size = self.font_size + 1
         # h1...h6 header tags
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
+            self.newline()
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size = self.font_size + font_size_difference
@@ -125,8 +127,7 @@ class Renderer(HTMLParser):
         Handle an HTML end tag, for example </a> or </b>
         """
         if tag == 'br' or tag == 'p':  # move to a new line
-            self.y_pos += self.font_size
-            self.x_pos = 0
+            self.newline()
         if tag == 'script' or tag == 'style' or tag == 'title':
             self.ignore_current_text = False
         if tag == 'b' or tag == 'strong':
@@ -140,11 +141,18 @@ class Renderer(HTMLParser):
         if tag == 'big':
             self.font_size = self.font_size - 1
         if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
-            self.y_pos += self.font_size
-            self.x_pos = 0
+            self.newline()
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size = self.font_size - font_size_difference
+
+    def newline(self):
+        """
+        Start a new line of text.
+        """
+        self.y_pos += self.tallest_text_in_previous_line
+        self.x_pos = 0
+        self.tallest_text_in_previous_line = 0
 
     def handle_data(self, data):
         """
@@ -168,6 +176,9 @@ class Renderer(HTMLParser):
         # can draw the next bit alongside.
         text_bounding_box = self.canvas.bbox(text_obj_id)
         self.x_pos = text_bounding_box[2]
+        text_height = text_bounding_box[3] - text_bounding_box[1]
+        if text_height > self.tallest_text_in_previous_line:
+            self.tallest_text_in_previous_line = text_height
         # If we're in a hyperlink, tell the GUI that we need
         # to be informed if it's clicked.
         if self.current_link is not None:
