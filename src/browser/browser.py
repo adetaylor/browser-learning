@@ -98,6 +98,9 @@ class Renderer(HTMLParser):
             self.font_size = self.font_size - 1
         if tag == 'big':
             self.font_size = self.font_size + 1
+        # h1...h6 header tags
+        if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
+            self.font_size = self.font_size + (8 - int(tag[1]))
 
     def handle_endtag(self, tag):
         """
@@ -115,6 +118,8 @@ class Renderer(HTMLParser):
             self.font_size = self.font_size + 1
         if tag == 'big':
             self.font_size = self.font_size - 1
+        if len(tag) == 2 and tag[0] == 'h' and tag != 'hr':
+            self.font_size = self.font_size - (8 - int(tag[1]))
 
     def handle_data(self, data):
         """
