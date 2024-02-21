@@ -8,7 +8,7 @@
 4. Fetch the zip of this course (your instructor will tell you how).
 4. In Terminal, run:
 ```
-unzip browser-learning.zip
+unzip ~/Downloads/browser-learning.zip
 cd browser-learning
 python3 -m venv venv
 . venv/bin/activate
