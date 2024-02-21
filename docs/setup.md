@@ -15,10 +15,6 @@ python3 -m venv venv
 python3 -m pip install -r src/requirements.txt
 ```
 
-## All platforms
-
-`python3 -m pip install -r src/requirements.txt`
-
 ## Chromebooks
 
 1. Under the main menu in bottom left corner of the screen, open Terminal. Follow the instructions to turn on the Linux environment if necessary. Go with all the standard settings. (Note that this environment may not be available for guest users)
@@ -36,6 +32,10 @@ python3 -m venv venv
 python3 -m pip install -r src/requirements.txt
 ```
 
-## Mac
+## Other types of machine
 
-Install the latest version of Python from [the Python website](https://www.python.org/).
+Do what's required to install:
+
+* Python 3.12+
+* `tcpdump`
+* Visual Studio code, or some other good code editor (the students will be doing lots of _reading code_ so a good IDE is highly recommended)
