@@ -2,7 +2,18 @@
 
 ## Mac
 
-You need at least Python 3.11.
+1. Open Terminal.
+2. Run `python --version`. See what Python version you have. You need at least Python 3.12. You can get it from the [main Python website](https://www.python.org/downloads/).
+3. Fetch and install [Visual Studio Code](https://code.visualstudio.com/) if you don't already have it.
+4. Fetch the zip of this course (your instructor will tell you how).
+4. In Terminal, run:
+```
+unzip browser-learning.zip
+cd browser-learning
+python3 -m venv venv
+. venv/bin/activate
+python3 -m pip install -r src/requirements.txt
+```
 
 ## All platforms
 
