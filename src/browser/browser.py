@@ -106,7 +106,7 @@ class Renderer(HTMLParser):
                 if tag_name == 'content':
                     content = tag_value
             if is_refresh and content is not None:
-                parts = tag_value.split('; ')
+                parts = content.split('; ')
                 if len(parts) == 2:
                     self.browser.set_window_url(parts[1])
                     if parts[0] == '0':  # navigate immediately to the requested URL

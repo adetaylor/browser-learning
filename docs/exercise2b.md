@@ -2,7 +2,7 @@
 
 Do some [research on standard HTML tags](https://www.w3schools.com/tags/), and add support for another one of your choice.
 
-* (Hopefully) easy choices: anything that just alters the appearance of the text, e.g. `h1`-`h6`, `font color`.
+* (Hopefully) easy choices: anything that just alters the appearance of the text, e.g. `font color`.
 * Slightly harder: support the horizontal rule, `hr`
 * Medium choices: change the title bar of the browser window when it finds a `title` tag. (Hint: this will
   probably involve adding another function to the `Browser` class which you'll call from the `Renderer` class).

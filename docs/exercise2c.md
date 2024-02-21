@@ -11,8 +11,8 @@ Hints:
 * Right now, it receives all the text inside each HTML tag in one go, for
   example `<b>All this text arrives in one call to that function and
   this might be too wide to fit on the screen in one line.</b>`
-* Maybe you can split that into words and draw one word at a time? That sounds
-  like a loop, right?
+* Maybe you can split that into words and draw one word at a time?
+* That sounds like a loop, right?
 * The Python [`split` function](https://www.w3schools.com/python/ref_string_split.asp) might be useful.
 * We already measure how wide the text was. Perhaps you can use that to
   decide when to start a new line?
