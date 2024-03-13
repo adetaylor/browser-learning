@@ -23,10 +23,7 @@ python3 -m pip install -r src/requirements.txt
 ```
 unzip browser-learning.zip
 cd browser-learning
-curl -o code.deb -L http://go.microsoft.com/fwlink/?LinkID=760868
-sudo dpkg -i code.deb
-sudo apt-get update
-sudo apt-get install python3.11-venv python3.11-tk pip openssl tcpdump libnss3 libnspr4
+./install-linux-prerequisites.sh
 python3 -m venv venv
 . venv/bin/activate
 python3 -m pip install -r src/requirements.txt
