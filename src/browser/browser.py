@@ -34,7 +34,7 @@ class Renderer(HTMLParser):
 
     For instance, with this HTML:
       <b>Some text</b>
-    we would get a call to 'handle_starttagg', then 'handle_data'
+    we would get a call to 'handle_starttag', then 'handle_data'
     then 'handle_endtag'.
     """
 
@@ -213,7 +213,8 @@ class Browser:
             # The hyperlink was a relative URL, e.g. just "some_page.html".
             # We need to change that into an absolute URL, e.g.
             # https://en.wikipedia.org/some_page.html
-            # by combining it with parts of the currently-viewed URL
+            # by combining it with parts of the currently-viewed URL.
+            # (This is a simplification of the real checks for relative URLs...)
             current_url_parts = urlparse(self.current_url)
             url = current_url_parts._replace(path=url).geturl()
         # fill in the URL bar with the new URL
