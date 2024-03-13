@@ -36,3 +36,8 @@ Do what's required to install:
 * Python 3.12+
 * `tcpdump`
 * Visual Studio code, or some other good code editor (the students will be doing lots of _reading code_ so a good IDE is highly recommended)
+
+## Troubleshooting
+
+* I see `"If this fails your Python may not be configured for Tk".`
+  This is probably on MacOS and you probably installed python using `brew`; `brew install python-tk` might work.
