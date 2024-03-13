@@ -23,7 +23,7 @@ python3 -m pip install -r src/requirements.txt
 ```
 unzip browser-learning.zip
 cd browser-learning
-./install-linux-prerequisites.sh
+./install-chromebook-prerequisites.sh
 python3 -m venv venv
 . venv/bin/activate
 python3 -m pip install -r src/requirements.txt
