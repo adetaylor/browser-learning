@@ -99,9 +99,7 @@ classes interact in both directions, like this:
 
 ```mermaid
 sequenceDiagram
-    browser(Browser class)
-    renderer(Renderer class)
-    browser->renderer: Please draw the following HTML
-    renderer->brower: User clicked a link, please load it
-    browser->renderer: Please draw the following HTML for the new page
+    Browser->>Renderer: Please draw the following HTML
+    Renderer->>Browser: User clicked a link, please load it
+    Browser->>Renderer: Please draw the following HTML for the new page
 ```
