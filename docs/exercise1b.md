@@ -90,3 +90,18 @@ another object, and we're calling one of the canvas' functions.
 Good question! That means that our class `Renderer` is a special type of
 a different class called `HTMLParser` which happens to be provided by one
 of the libraries we're using.
+
+### What's the difference between the renderer and browser?
+
+The `Browser` class is responsible for loading pages on the network. The
+`Renderer` class is responsible for drawing them on the screen. The two
+classes interact in both directions, like this:
+
+```mermaid
+sequenceDiagram
+    browser(Browser class)
+    renderer(Renderer class)
+    browser->renderer: Please draw the following HTML
+    renderer->brower: User clicked a link, please load it
+    browser->renderer: Please draw the following HTML for the new page
+```
