@@ -1,5 +1,8 @@
 # System requirements and setup
 
+In all cases, open a browser to visit `https://github.com/adetaylor/browser-learning`
+- you should be looking at these pages!
+
 ## Mac
 
 1. Open Terminal.
