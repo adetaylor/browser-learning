@@ -18,16 +18,17 @@ python3 -m pip install -r src/requirements.txt
 ## Chromebooks
 
 1. Under the main menu in bottom left corner of the screen, open Terminal. Follow the instructions to turn on the Linux environment if necessary. Go with all the standard settings. (Note that this environment may not be available for guest users)
-2. Fetch the zip of this course (the instructor will tell you how). Copy it into the Linux environment from Chrome's downloads page.
-3. In the terminal, run these commands: (you might need to slightly change the filename in the first command)
+2. In the terminal, run these commands:
 ```
-unzip browser-learning.zip
+git clone https://github.com/adetaylor/browser-learning.git
 cd browser-learning
 ./install-chromebook-prerequisites.sh
 python3 -m venv venv
 . venv/bin/activate
-python3 -m pip install -r src/requirements.txt
+pip3 install -r src/requirements.txt
 ```
+3. Keep the terminal open - you'll need it to run commands. (If you open a new terminal, run `cd browser-learning` and then `. venv/bin/activate`)
+4. From the main menu, also open Visual Studio code.
 
 ## Other types of machine
 

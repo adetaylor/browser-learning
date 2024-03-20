@@ -6,7 +6,9 @@
   * _Italic_ text
   * Hyperlinks
 * Open up the browser source code (open the file `src/browser/browser.py`) -
-  it's recommended to use Visual Studio Code
+  it's recommended to use Visual Studio Code. (Specifically, if you're using a Chromebook,
+  choose File -> Open Folder, click browser-learning once, and click Open. You can then use
+  the side panel to navigate to `src/browser/browser.py`)
 * Find where it handles these tags. See which is missing.
 
 ## About reading code
@@ -22,6 +24,10 @@ before worrying about the details. Skip over bits you don't understand.
 Clues below! But get reading the code first, then come back to this.
 
 ## What's  up with...
+
+### The editor
+
+Top tip for reading code: make the window as big as possible.
 
 ### The overall structure
 
