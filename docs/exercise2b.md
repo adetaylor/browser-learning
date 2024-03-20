@@ -17,5 +17,4 @@ Do some [research on standard HTML tags](https://www.w3schools.com/tags/), and a
 * Impossible choice: anything to do with page layout. Don't attempt to support tables, frames or anything
   fancy like that. It would take hundreds of hours - it's all very complicated. Don't even try.
 
-Good choices might be h1-h6 or `font color`.
 

@@ -16,7 +16,8 @@ Any of the following counts as a success:
   other website.
 
 Rules:
-* You can only do this by altering the HTML content of the web page.
+* You can only do this by *altering the HTML content of the web page*. Remember,
+  you're a website operator. You *cannot* change the browser code.
 
 > [!TIP]
 > If you find a bug which makes one website look like another one,
