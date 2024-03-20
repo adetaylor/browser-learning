@@ -11,7 +11,7 @@ In all cases, open a browser to visit `https://github.com/adetaylor/browser-lear
 4. Fetch the zip of this course (your instructor will tell you how).
 4. In Terminal, run:
 ```
-unzip ~/Downloads/browser-learning.zip
+git clone https://github.com/adetaylor/browser-learning.git
 cd browser-learning
 python3 -m venv venv
 . venv/bin/activate
