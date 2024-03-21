@@ -7,7 +7,7 @@ Do the same thing, but:
 * Use a slightly different `tcpdump` command:
 
 ```
-sudo tcpdump -i lo0 -A 'tcp port 4443'
+sudo tcpdump -i lo -A 'tcp port 4443'
 ```
 
 What do you see now?

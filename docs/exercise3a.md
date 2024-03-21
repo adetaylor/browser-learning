@@ -56,15 +56,15 @@ sudo tcpdump -D
 
 Hopefully, one of them is labelled "loopback". That's the one we want today,
 which enables us to spy on a browser and server running on your computer.
-What's it called? It might be called `lo0`. Remember that.
+What's it called? It might be called `lo`. Remember that.
 
 Now run
 
 ```
-sudo tcpdump -i lo0 -A 'tcp port 8000'
+sudo tcpdump -i lo -A 'tcp port 8000'
 ```
 
-(You might need to swap `lo0` with whatever your loopback interface was called.)
+(You might need to swap `lo` with whatever your loopback interface was called.)
 
 > [!TIP]
 > You can press the Up arrow to edit a command you previously ran.
