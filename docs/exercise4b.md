@@ -18,13 +18,25 @@ Now:
 1. Modify *one single number* in `fuzzer.py` so that it finds one
    of the security bugs. Run the fuzzer again.
 2. Modify the `generate_testcase` more extensively to generate random-
-   but-realistic HTML that can find all the hidden bugs (or at least,
-   all those which cause crashes)
+   but-realistic HTML that can find all the hidden crashes (or at least,
+   some more of them)
 
-Rules:
+## Rules
+
 * Your fuzzer must *NOT* have knowledge about the specific security bugs
   it's looking for. That's cheating!
 * But it's OK for it to know about HTML in general.
+
+## Hints
+
+Writing a good fuzzer is hard. You'll need to think about:
+
+* Generating all possible HTML tags. Consider using [`random.choice`](https://docs.python.org/3/library/random.html#random.choice).
+* Connecting several HTML tokens together, possibly by generating multiple tags in a loop
+  and then building a string containing all the tokens you made. You can go through
+  the loop a [random number of times](https://docs.python.org/3/library/random.html#random.choice).
+* The probability of generating a specific faulty test case at random, and what you can do
+  to make it realistic. This is hard.
 
 ## Bonus exercise
 
