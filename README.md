@@ -43,3 +43,5 @@ below.
 
 * [Exercise 4a](docs/exercise4a.md): Find some security bugs hidden in the code of our mini
   browser.
+* [Exercise 4b](docs/exercise4b.md): Write a program that finds bugs in another program
+  (a "fuzzer").

@@ -20,6 +20,7 @@ import tkinter  # needed for PyDroid3 compatibility
 import PySimpleGUI as sg
 import requests
 import os
+import sys
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
@@ -226,6 +227,9 @@ class Browser:
         Update the status line at the bottom of the screen
         """
         self.window['-STATUS-'].update(message)
+        # Ignore the following two lines, they're used for exercise 4b only
+        if os.environ.get("OUTPUT_STATUS") is not None:
+            print(message + "\n", flush=True)
 
     def set_window_title(self, message):
         """
@@ -303,10 +307,14 @@ layout = [[sg.Text('URL:'), sg.Input(initial_url, key='-URL-'), sg.Button('Go', 
           [sg.Canvas(size=(300, 300), key='-CANVAS-', expand_x=True,
                      expand_y=True, background_color='White')],
           [sg.Text('Status:', key='-STATUS-')]]
-window = sg.Window('Simple Browser', layout, resizable=True)
+window = sg.Window('Simple Browser', layout, resizable=True, finalize=True)
 
 # Create the one (and only) example of our Browser class.
 browser = Browser(window)
+
+# If we were given a URL on the command-line, load that
+if len(sys.argv) > 1:
+    browser.navigate(sys.argv[1])
 
 # The "event loop". An event is something like a click or the user
 # typing something. Keep handling those events from the user until
