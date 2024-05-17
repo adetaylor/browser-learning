@@ -31,12 +31,17 @@ Now:
 
 Writing a good fuzzer is hard. You'll need to think about:
 
+* How long it takes the fuzzer to explore all the things you want it to
+  explore.
+* Whether you are aiming to generate fake HTML tags, or snippets of HTML
+  consisting of valid tags, or both. Both is hard.
 * Generating all possible HTML tags. Consider using [`random.choice`](https://docs.python.org/3/library/random.html#random.choice).
 * Connecting several HTML tokens together, possibly by generating multiple tags in a loop
   and then building a string containing all the tokens you made. You can go through
   the loop a [random number of times](https://docs.python.org/3/library/random.html#random.choice).
-* The probability of generating a specific faulty test case at random, and what you can do
-  to make it realistic. This is hard.
+* Sometimes it's worth calculating roughly how long it might take before the
+  fuzzer happens upon the test case you want. If it's too long to be
+  realistic, change the fuzzer to be more targeted.
 
 ## Bonus exercise
 
