@@ -1,6 +1,10 @@
 # Exercise 2c: word wrap!
 
-You might notice that the browser doesn't have word wrap.
+You might notice that the browser doesn't have word wrap. Really long lines
+of text flow right off the side of the window and you can't read them. Word
+wrap is the way most browsers (and other apps) will chop those long lines
+into shorter lines automatically, so you can read all of it.
+
 How would you do that?
 
 Hints:
