@@ -65,7 +65,12 @@ httpd_server_thread.start()
 
 print("Beginning fuzzing. Press Control-C (maybe several times) to stop.")
 
-browser_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "browser", "browser.py")
+# This runs a modified version of the browser which has the original
+# bugs fixed... but a new one introduced.
+browser_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "browser-v2.py")
+
+# Use this line instead if you want to open the original browser
+# browser_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "browser", "browser.py")
 url = "http://localhost:8001/testcase.html"
 while running:
     testcase = generate_testcase()
