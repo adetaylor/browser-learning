@@ -260,10 +260,12 @@ class Browser:
             response = requests.get(url)
         except:
             self.set_status('Status: unable to connect to %s' % url)
+            self.clear_content_area()
             return
         if not response.ok:
             self.set_status('Status: web server gave us error code %d' %
                             response.status_code)
+            self.clear_content_area()
             return
         self.set_status('Status: OK, rendering')
         page_html = response.text
@@ -278,6 +280,12 @@ class Browser:
         # handle_data.
         renderer.feed(page_html)
         self.set_status('Status: OK')
+
+    def clear_content_area(self):
+        """
+        Blank the content area.
+        """
+        self.window['-CANVAS-'].TKCanvas.delete('all')
 
     def setup_encryption(self, url):
         """
