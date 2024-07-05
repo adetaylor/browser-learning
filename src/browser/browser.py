@@ -16,8 +16,9 @@
 
 # Simple demo python web browser. Lacks all sorts of important features.
 
-import tkinter  # needed for PyDroid3 compatibility
-import PySimpleGUI as sg
+from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QSizePolicy
+from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QEvent
+from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
 import requests
 import os
 import sys
@@ -28,28 +29,83 @@ from urllib.parse import urlparse
 FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
 
 
-class Renderer(HTMLParser):
+class Renderer(HTMLParser, QWidget):
     """
-    Instructs Python how we wish to handle the start, middle, and end
-    of HTML tags.
-
-    For instance, with this HTML:
-      <b>Some text</b>
-    we would get a call to 'handle_starttag', then 'handle_data'
-    then 'handle_endtag'.
+    Represents the area of the screen occupied by the web content (as
+    opposed to the URL bar, etc.) Knows how to convert HTML tags
+    (e.g. <b>some text</b>) into actual pixels on the screen, by drawing
+    the right sort of text in the right places.
     """
 
-    def __init__(self, canvas, browser):
+    def __init__(self, parent=None):
         """
-        Our HTML understanding engine needs to maintain some information
-        about what it's already discovered. For example, if we've been
-        past a <b> tag, we need to remember that we should draw text in
-        bold.
+        Code which is run when we create a new Renderer.
         """
-        super().__init__()
-        self.canvas = canvas  # the GUI 'canvas' on which we draw
-        self.browser = browser  # the main browser object
+        # Set up the underlying HTML parser and user interface code.
+        super(Renderer, self).__init__()
+        QWidget.__init__(self, parent)
+        # Tell the user interface code that we are stretchy, in case
+        # the window is resized.
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding))
+        self.known_links = list()  # stores clickable UI areas
+        # and the URL we want to visit when it's clicked
+        # as a list of five-tuples like this:
+        #  (x1, y1, x2, y2, url)
+        # e.g.
+        #  (10, 20, 50, 30, "http://foo.com")
+        self.html = ""
+        self.browser = None
 
+    def minimumSizeHint(self):
+        """
+        Returns the smallest possible size on the screen for our renderer.
+        """
+        return QSize(800, 400)
+
+    def set_browser(self, browser):
+        """
+        Remembers a reference to the browser object, so we can tell
+        the browser later when a link is clicked.
+        """
+        self.browser = browser
+
+    def mouseReleaseEvent(self, event: QMouseEvent | None) -> None:
+        """
+        Handle a click somewhere in the renderer area. See if it
+        matches any known link.
+        """
+        if event is not None and self.browser is not None:
+            x = event.position().x()
+            y = event.position().y()
+            for possible_link in self.known_links:
+                (x1, y1, x2, y2, url) = possible_link
+                if x >= x1 and x <= x2 and y >= y1 and y <= y2:
+                    self.browser.link_clicked(url)
+                    return None
+        return super().mouseReleaseEvent(event)
+
+    def set_html(self, html):
+        """
+        Store the HTML text we've been given. We'll use it when
+        the user interface asks us to repaint.
+        """
+        self.html = html
+        self.update() # redraw. This will arrange for the UI
+          # library to call paintEvent, just below.
+
+    def paintEvent(self, event):
+        """
+        This is called by the user interface whenever we need
+        to draw the screen. This may be called because of the
+        "self.update()" call just above, or because the UI
+        has decided we need to redraw for some other reason.
+
+        Take the HTML we were given by the website, and draw it
+        onto the screen.
+        """
+        self.painter = QPainter(self)
+        # Clear the area.
+        self.painter.fillRect(self.rect(), Qt.GlobalColor.white)
         # Information we are remembering as we draw the page,
         # to influence how we draw subsequent bits of the page.
         self.y_pos = 0  # where we should draw the next text
@@ -59,23 +115,18 @@ class Renderer(HTMLParser):
         self.is_strikethrough = False
         self.font_size = 12
         self.tallest_text_in_previous_line = 0
+        self.space_needed_before_next_data = False
         self.current_link = None # if we're in a <a href=...> hyperlink
-        self.known_links = dict()  # stores the relationship between
-        # the bits of text shown in the UI (remembered by number)
-        # and the URL we want to visit when it's clicked.
-        # First ensure the canvas is blank.
-        self.canvas.delete('all')
-
-    def link_clicked(self, link_event):
-        """
-        This code is called by the GUI canvas code when
-        a link is clicked. We look up which link was clicked
-        and then inform the Browser class by calling one of its
-        functions.
-        """
-        widget_id = link_event.widget.find_withtag('current')[0]
-        url = self.known_links[widget_id]
-        self.browser.link_clicked(url)
+        self.known_links = list() # Links anywhere on the page
+        # The following call interprets all the HTML in page_html.
+        # You can't see most of the code which does this because it's
+        # in the library which provides the HTMLParser class. But it will
+        # result in lots of calls to handle_starttag, handle_endtag and
+        # handle_data.
+        # So you can think of this as lots of calls to handle_starttag,
+        # handle_data and handle_endtag depending on what's inside self.html.
+        self.feed(self.html)
+        self.painter = None
 
     def handle_starttag(self, tag, attrs):
         """
@@ -123,6 +174,7 @@ class Renderer(HTMLParser):
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size += font_size_difference
+        self.space_needed_before_next_data = True
 
     def handle_endtag(self, tag):
         """
@@ -147,12 +199,14 @@ class Renderer(HTMLParser):
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size -= font_size_difference
+        self.space_needed_before_next_data = True
 
     def newline(self):
         """
         Start a new line of text.
         """
-        self.y_pos += self.tallest_text_in_previous_line
+        SPACING = 3 # just allow a bit of extra space between lines
+        self.y_pos += self.tallest_text_in_previous_line + SPACING
         self.x_pos = 0
         self.tallest_text_in_previous_line = 0
 
@@ -164,47 +218,92 @@ class Renderer(HTMLParser):
         data = data.rstrip()
         if self.ignore_current_text or data == '':
             return
+        if self.space_needed_before_next_data:
+            self.space_needed_before_next_data = False
+            data = ' ' + data
         # Work out what font we'll draw this in.
-        font = 'Helvetica %d' % self.font_size
+        weight = QFont.Weight.Normal
         if self.is_bold:
-            font = font + ' bold'
-        fill = 'black'
+            weight = QFont.Weight.Bold
+        font = QFont("Helvetica", weight=weight, pointSize=self.font_size, italic=False)
+        self.painter.setFont(font)
+        fill = Qt.GlobalColor.black
         if self.current_link is not None:
-            fill = 'blue'
-            font = font + ' underline'
+            fill = Qt.GlobalColor.blue
+        self.painter.setPen(fill)
+        # Work out the size of the text we're about to draw.
+        text_measurer = QFontMetrics(font)
+        text_width = int(text_measurer.horizontalAdvance(data))
+        text_height = int(text_measurer.height())
         # Tell our GUI canvas to draw some text! The important bit!
-        text_obj_id = self.canvas.create_text(
-            self.x_pos, self.y_pos, text=data, fill=fill, font=font, anchor=sg.tk.NW)
-        # Work out how wide this text was, so we
-        # can draw the next bit alongside.
-        text_bounding_box = self.canvas.bbox(text_obj_id)
-        self.x_pos = text_bounding_box[2]
-        text_height = text_bounding_box[3] - text_bounding_box[1]
-        if text_height > self.tallest_text_in_previous_line:
-            self.tallest_text_in_previous_line = text_height
-        # If we're in a hyperlink, tell the GUI that we need
-        # to be informed if it's clicked.
+        self.painter.drawText(QPoint(self.x_pos, self.y_pos + text_height), data)
+        # If we're in a hyperlink, underline it and record its coordinates
+        # in case it gets clicked later.
         if self.current_link is not None:
-            self.known_links[text_obj_id] = self.current_link
-            self.canvas.tag_bind(text_obj_id, '<Button-1>', self.link_clicked)
+            self.painter.drawLine(self.x_pos, self.y_pos + text_height, self.x_pos + text_width, self.y_pos + text_height)
+            self.known_links.append((self.x_pos, self.y_pos, self.x_pos + text_width, self.y_pos + text_height, self.current_link))
         # Strikethrough - draw a line over the text but only
         # if we don't cover more than 50% of it, we don't want it illegible
         if self.is_strikethrough:
-            fraction_of_text_covered = 6 / self.font_size
-            if fraction_of_text_covered <= 0.5:
-                self.canvas.create_line(text_bounding_box[0], text_bounding_box[1] + (self.font_size / 2) - 80,
-                                        text_bounding_box[2], text_bounding_box[1] + (self.font_size / 2) - 80)
+           fraction_of_text_covered = 6 / self.font_size
+           if fraction_of_text_covered <= 0.5:
+               strikethrough_line_y_pos = self.y_pos + (self.font_size / 2) - 80
+               self.canvas.create_line(self.x_pos, strikethrough_line_y_pos,
+                                       self.x_pos + text_width, strikethrough_line_y_pos)
+        self.x_pos = self.x_pos + text_width
+        if text_height > self.tallest_text_in_previous_line:
+            self.tallest_text_in_previous_line = text_height
 
 
-class Browser:
+class Browser(QMainWindow):
     """
-    A class of objects representing the browser overall. At any time there's
+    A class of objects representing the browser window. At any time there's
     exactly one of these Browser objects existing.
     """
 
-    def __init__(self, window):
+    def __init__(self, initial_url):
+        """
+        Code which is run when our Browser is created.
+        """
+        super(Browser, self).__init__()
         self.current_url = None
-        self.window = window
+        # All the following code lays out the UI.
+        toolbar_layout = QHBoxLayout()
+        toolbar_layout.addWidget(QLabel("URL:"))
+        self.url_box = QLineEdit()
+        self.url_box.returnPressed.connect(self.go_button_clicked)
+        toolbar_layout.addWidget(self.url_box)
+        go_button = QPushButton("Go")
+        go_button.clicked.connect(self.go_button_clicked)
+        toolbar_layout.addWidget(go_button)
+        exit_button = QPushButton("Exit")
+        exit_button.clicked.connect(lambda: QApplication.quit())
+        toolbar_layout.addWidget(exit_button)
+        toolbar = QWidget()
+        toolbar.setLayout(toolbar_layout)
+        overall_layout = QVBoxLayout()
+        overall_layout.addWidget(toolbar)
+        self.renderer = Renderer()
+        self.renderer.set_browser(self)
+        overall_layout.addWidget(self.renderer)
+        self.status_bar = QLabel("Status:")
+        overall_layout.addWidget(self.status_bar)
+        widget = QWidget()
+        widget.setLayout(overall_layout)
+        self.setCentralWidget(widget)
+        self.settings = QSettings("browser-learning", "browser")
+        if initial_url is None:
+            initial_url = self.settings.value("url", "https://en.wikipedia.org", type=str)
+            self.set_window_url(initial_url)
+        else:
+            self.navigate(initial_url)
+
+    def go_button_clicked(self):
+        """
+        Called when the Go button is clicked
+        """
+        url = self.url_box.text()
+        self.navigate(url)
 
     def link_clicked(self, url):
         """
@@ -220,28 +319,22 @@ class Browser:
             url = current_url_parts._replace(path=url).geturl()
         # fill in the URL bar with the new URL
         self.set_window_url(url)
-        self.window['Go'].click()  # pretend the user clicked Go
+        self.navigate(url)
 
     def set_status(self, message):
         """
         Update the status line at the bottom of the screen
         """
-        self.window['-STATUS-'].update(message)
+        self.status_bar.setText(message)
         # Ignore the following two lines, they're used for exercise 4b only
         if os.environ.get("OUTPUT_STATUS") is not None:
             print(message + "\n", flush=True)
-
-    def set_window_title(self, message):
-        """
-        Sets the title of the window
-        """
-        self.window.set_title(message)
 
     def set_window_url(self, url):
         """
         Sets the URL bar
         """
-        self.window['-URL-'].update(url)
+        self.url_box.setText(url)
 
     def navigate(self, url):
         """
@@ -250,7 +343,7 @@ class Browser:
         if not ':' in url:
             url = 'https://' + url
             self.set_window_url(url)
-        sg.user_settings_set_entry('-URL-', url)
+        self.settings.setValue("url", url)
         self.current_url = url
         self.set_status('Status: loading...')
         self.setup_encryption(url)
@@ -260,32 +353,18 @@ class Browser:
             response = requests.get(url)
         except:
             self.set_status('Status: unable to connect to %s' % url)
-            self.clear_content_area()
+            self.renderer.set_html("")
             return
         if not response.ok:
             self.set_status('Status: web server gave us error code %d' %
                             response.status_code)
-            self.clear_content_area()
+            self.renderer.set_html("")
             return
-        self.set_status('Status: OK, rendering')
         page_html = response.text
-        canvas_in_which_to_draw_page = self.window['-CANVAS-'].TKCanvas
-        # Create a new object of the Renderer class.
-        # Pass it the canvas that it should draw the page in.
-        renderer = Renderer(canvas_in_which_to_draw_page, self)
-        # This tells the renderer to interpret all the HTML in page_html.
-        # You can't see most of the code which does this because it's
-        # in the library which provides the HTMLParser class. But it will
-        # result in lots of calls to handle_starttag, handle_endtag and
-        # handle_data.
-        renderer.feed(page_html)
+        # Tell the renderer about the HTML.
+        # It doesn't actually handle it until it's asked to paint.
+        self.renderer.set_html(page_html)
         self.set_status('Status: OK')
-
-    def clear_content_area(self):
-        """
-        Blank the content area.
-        """
-        self.window['-CANVAS-'].TKCanvas.delete('all')
 
     def setup_encryption(self, url):
         """
@@ -298,41 +377,29 @@ class Browser:
         elif "REQUESTS_CA_BUNDLE" in os.environ:
             del os.environ["REQUESTS_CA_BUNDLE"]
 
+
 #########################################
 # Main program here
 #########################################
 
 # Set up the graphical user interface (GUI)
-sg.theme('DarkAmber')
-sg.user_settings_filename(path='.')
-initial_url = sg.user_settings_get_entry(
-    '-URL-', 'https://en.wikipedia.org')  # find the last URL that
-    # the user used in this browser, or use wikipedia if they never used it before.
+app = QApplication([])
 
-# Set up the GUI layout. All the '-SOMETHING-' bits are the names we give
-# each UI control so we can investigate or modify their contents later.
-layout = [[sg.Text('URL:'), sg.Input(initial_url, key='-URL-'), sg.Button('Go', bind_return_key=True), sg.Exit()],
-          [sg.Canvas(size=(300, 300), key='-CANVAS-', expand_x=True,
-                     expand_y=True, background_color='White')],
-          [sg.Text('Status:', key='-STATUS-')]]
-window = sg.Window('Simple Browser', layout, resizable=True, finalize=True)
+# See if we were given a URL on the command-line
+initial_url = None
+if len(sys.argv) > 1:
+    initial_url = sys.argv[1]
 
 # Create the one (and only) example of our Browser class.
-browser = Browser(window)
-
-# If we were given a URL on the command-line, load that
-if len(sys.argv) > 1:
-    browser.navigate(sys.argv[1])
+window = Browser(initial_url)
+window.show()
 
 # The "event loop". An event is something like a click or the user
 # typing something. Keep handling those events from the user until
-# Exit is clicked or the window is closed.
-while True:
-    # See what the user has asked us to do
-    event, values = window.read()
-    if event == sg.WIN_CLOSED or event == 'Exit':
-        break
-    if event == 'Go':  # navigate to a new page
-        browser.navigate(values['-URL-'])
-
-window.close()
+# Exit is clicked or the window is closed. All of this happens
+# within app.exec().
+# In particular, this will end up calling the "repaint" method whenever
+# we need to display something on the screen, along with
+# methods above like "go_button_clicked" or "mouseReleaseEvent"
+# when the user interacts with the app.
+app.exec()
