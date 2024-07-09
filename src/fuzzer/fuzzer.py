@@ -33,7 +33,7 @@ def generate_testcase():
 
 # You should not need to modify anything below here
 
-testcase = None
+testcase = ""
 running = True
 exited_intentionally = False
 
@@ -65,25 +65,29 @@ httpd_server_thread.start()
 
 print("Beginning fuzzing. Press Control-C (maybe several times) to stop.")
 
-# This runs a modified version of the browser which has the original
-# bugs fixed... but a new one introduced.
-browser_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "browser-v2.py")
+browser_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "browser", "browser.py")
 
-# Use this line instead if you want to open the original browser
-# browser_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "browser", "browser.py")
 url = "http://localhost:8001/testcase.html"
+
+browserenv = os.environ
+browserenv["OUTPUT_STATUS"] = "1"
+browser_proc = subprocess.Popen(stdout=subprocess.PIPE, args=[browser_path, url], env=browserenv, encoding="utf8")
+
+first = True
+
 while running:
     testcase = generate_testcase()
     print("Trying %s" % testcase)
-    browserenv = os.environ
-    browserenv["OUTPUT_STATUS"] = "1"
-    browser_proc = subprocess.Popen(stdout=subprocess.PIPE, args=[browser_path, url], env=browserenv, encoding="utf8")
     crashed = True
     render_completed = False
+    if first:
+        first = False
+    else:
+        browser_proc.send_signal(signal.SIGHUP)
     while browser_proc.poll() is None and running and not render_completed:
         try:
             line = browser_proc.stdout.readline()
-            if "OK\n" in line:
+            if "Rendering completed\n" in line:
                 crashed = False
                 render_completed = True
         except:
@@ -91,4 +95,4 @@ while running:
     if crashed and not exited_intentionally:
         print("The HTML\n%s\ncrashed the browser! Good job!" % testcase)
         running = False
-    browser_proc.terminate()
+browser_proc.terminate()

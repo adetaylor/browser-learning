@@ -1,1 +1,1 @@
-The bug is in the handling of a standard, common, HTML tag - specifically, an HTML tag which was *not* included in `browser.py`.
+The bug is in the handling of some standard, fairly common, HTML tags.

@@ -6,9 +6,11 @@ the hidden security bugs in the previous exercise.
 Now you're going to write a program to find more security bugs. A program which
 finds security bugs by testing another program is called a "fuzzer".
 
+**Note**: this exercise probably only works on Linux, Mac or Chromebooks.
+
 Do this:
 
-* Do *NOT* look at the code for `src/fuzzer/browser-v2.py`. That is cheating!
+* Do *NOT* look at the code for `src/browser/html_table.py`. That is cheating!
 * Open `src/fuzzer/fuzzer.py` in VSCode and read it.
 * Run `python3 src/fuzzer/fuzzer.py`. Watch what it does.
 * Control-C to cancel it.
@@ -18,7 +20,7 @@ Now:
 1. Modify *one single number* in the `generate_testcase` function so that it
    finds one of the security bugs. Run the fuzzer again.
 2. Now, modify `generate_testcase` to find another bug which is hidden in
-   `src/fuzzer/browser-v2.py`. Do *not* look at its code - that's cheating!
+   `src/browser/html_table.py`. Do *not* look at its code - that's cheating!
    To be clear, this is an _extra_ security bug which wasn't in `browser.py`.
 
 ## General hints (no spoilers! Fine to read)
