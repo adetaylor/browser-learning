@@ -22,3 +22,5 @@ be run on an online Python REPL. The kids will need a real computer capable
 of running Python locally, and they'll need to be able to install a few Python
 libraries using `pip`. You should carefully run through the [setup requirements](setup.md)
 before deciding if this project is right for you.
+
+You may find [solutions at this page](solutions.md).

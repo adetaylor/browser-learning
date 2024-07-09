@@ -1,1 +1,1 @@
-There are several standard HTML list tags - `ul`, `ol`, `li` (and various others).
+There are several standard HTML table tags - `tr`, `td`, `table` (and various others).

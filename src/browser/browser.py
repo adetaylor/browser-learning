@@ -17,11 +17,13 @@
 # Simple demo python web browser. Lacks all sorts of important features.
 
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QSizePolicy
-from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QEvent
+from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
 import requests
 import os
+import signal
 import sys
+import html_table # do not look inside this file, that would be cheating on a later exercise
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
@@ -37,7 +39,7 @@ class Renderer(HTMLParser, QWidget):
     the right sort of text in the right places.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, browser, parent=None):
         """
         Code which is run when we create a new Renderer.
         """
@@ -54,20 +56,13 @@ class Renderer(HTMLParser, QWidget):
         # e.g.
         #  (10, 20, 50, 30, "http://foo.com")
         self.html = ""
-        self.browser = None
+        self.browser = browser
 
     def minimumSizeHint(self):
         """
         Returns the smallest possible size on the screen for our renderer.
         """
         return QSize(800, 400)
-
-    def set_browser(self, browser):
-        """
-        Remembers a reference to the browser object, so we can tell
-        the browser later when a link is clicked.
-        """
-        self.browser = browser
 
     def mouseReleaseEvent(self, event: QMouseEvent | None) -> None:
         """
@@ -118,6 +113,7 @@ class Renderer(HTMLParser, QWidget):
         self.space_needed_before_next_data = False
         self.current_link = None # if we're in a <a href=...> hyperlink
         self.known_links = list() # Links anywhere on the page
+        self.table = None # whether we're in an HTML table
         # The following call interprets all the HTML in page_html.
         # You can't see most of the code which does this because it's
         # in the library which provides the HTMLParser class. But it will
@@ -127,6 +123,9 @@ class Renderer(HTMLParser, QWidget):
         # handle_data and handle_endtag depending on what's inside self.html.
         self.feed(self.html)
         self.painter = None
+        # Ignore the following two lines, they're used for exercise 4b only
+        if os.environ.get("OUTPUT_STATUS") is not None:
+            print("Rendering completed\n", flush=True)
 
     def handle_starttag(self, tag, attrs):
         """
@@ -139,6 +138,13 @@ class Renderer(HTMLParser, QWidget):
             # Stuff inside these tags isn't actually HTML
             # to display on the screen.
             self.ignore_current_text = True
+        if self.table is not None:
+            # If we're inside a table, handle table-related tags but no others
+            if tag == 'tr':
+                self.table.handle_tr_start()
+            if tag == 'td':
+                self.table.handle_td_start()
+            return
         if tag == 'b' or tag == 'strong':
             self.is_bold = True
         if tag == 's':
@@ -174,12 +180,20 @@ class Renderer(HTMLParser, QWidget):
             heading_number = int(tag[1])
             font_size_difference = FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6[heading_number - 1]
             self.font_size += font_size_difference
+        if tag == 'table':
+            self.table = html_table.HTMLTable()
         self.space_needed_before_next_data = True
 
     def handle_endtag(self, tag):
         """
         Handle an HTML end tag, for example </a> or </b>
         """
+        if self.table is not None:
+            # If we're inside a table, handle table end but no other tags
+            if tag == 'table':
+                self.y_pos = self.table.handle_table_end(self.y_pos, lambda x, y, content: self.draw_text(x, y, content))
+                self.table = None
+            return
         if tag == 'br' or tag == 'p':  # move to a new line
             self.newline()
         if tag == 'script' or tag == 'style' or tag == 'title':
@@ -221,6 +235,21 @@ class Renderer(HTMLParser, QWidget):
         if self.space_needed_before_next_data:
             self.space_needed_before_next_data = False
             data = ' ' + data
+        if self.table is not None:
+            # If we're inside a table, ask our table layout code to
+            # figure out where to draw it later
+            self.table.handle_data(data)
+        else:
+            (text_width, text_height) = self.draw_text(self.x_pos, self.y_pos, data)
+            self.x_pos = self.x_pos + text_width
+            if text_height > self.tallest_text_in_previous_line:
+                self.tallest_text_in_previous_line = text_height
+
+    def draw_text(self, x_pos, y_pos, text):
+        """
+        Draw some text on the screen.
+        Returns a tuple of (x, y) space occupied
+        """
         # Work out what font we'll draw this in.
         weight = QFont.Weight.Normal
         if self.is_bold:
@@ -233,26 +262,24 @@ class Renderer(HTMLParser, QWidget):
         self.painter.setPen(fill)
         # Work out the size of the text we're about to draw.
         text_measurer = QFontMetrics(font)
-        text_width = int(text_measurer.horizontalAdvance(data))
+        text_width = int(text_measurer.horizontalAdvance(text))
         text_height = int(text_measurer.height())
         # Tell our GUI canvas to draw some text! The important bit!
-        self.painter.drawText(QPoint(self.x_pos, self.y_pos + text_height), data)
+        self.painter.drawText(QPoint(x_pos, y_pos + text_height), text)
         # If we're in a hyperlink, underline it and record its coordinates
         # in case it gets clicked later.
         if self.current_link is not None:
-            self.painter.drawLine(self.x_pos, self.y_pos + text_height, self.x_pos + text_width, self.y_pos + text_height)
-            self.known_links.append((self.x_pos, self.y_pos, self.x_pos + text_width, self.y_pos + text_height, self.current_link))
+            self.painter.drawLine(x_pos, y_pos + text_height, x_pos + text_width, y_pos + text_height)
+            self.known_links.append((x_pos, y_pos, x_pos + text_width, y_pos + text_height, self.current_link))
         # Strikethrough - draw a line over the text but only
         # if we don't cover more than 50% of it, we don't want it illegible
         if self.is_strikethrough:
            fraction_of_text_covered = 6 / self.font_size
            if fraction_of_text_covered <= 0.5:
-               strikethrough_line_y_pos = self.y_pos + (self.font_size / 2) - 80
-               self.canvas.create_line(self.x_pos, strikethrough_line_y_pos,
-                                       self.x_pos + text_width, strikethrough_line_y_pos)
-        self.x_pos = self.x_pos + text_width
-        if text_height > self.tallest_text_in_previous_line:
-            self.tallest_text_in_previous_line = text_height
+               strikethrough_line_y_pos = y_pos + (self.font_size / 2) - 80
+               self.canvas.create_line(x_pos, strikethrough_line_y_pos,
+                                       x_pos + text_width, strikethrough_line_y_pos)
+        return (text_width, text_height)
 
 
 class Browser(QMainWindow):
@@ -283,20 +310,21 @@ class Browser(QMainWindow):
         toolbar.setLayout(toolbar_layout)
         overall_layout = QVBoxLayout()
         overall_layout.addWidget(toolbar)
-        self.renderer = Renderer()
-        self.renderer.set_browser(self)
+        self.renderer = Renderer(self)
         overall_layout.addWidget(self.renderer)
         self.status_bar = QLabel("Status:")
         overall_layout.addWidget(self.status_bar)
         widget = QWidget()
         widget.setLayout(overall_layout)
         self.setCentralWidget(widget)
+        # Set up somewhere to remember the last URL the user used
         self.settings = QSettings("browser-learning", "browser")
         if initial_url is None:
             initial_url = self.settings.value("url", "https://en.wikipedia.org", type=str)
-            self.set_window_url(initial_url)
         else:
             self.navigate(initial_url)
+        self.set_window_url(initial_url)
+        self.setup_fuzzer_handling() # ignore
 
     def go_button_clicked(self):
         """
@@ -326,9 +354,6 @@ class Browser(QMainWindow):
         Update the status line at the bottom of the screen
         """
         self.status_bar.setText(message)
-        # Ignore the following two lines, they're used for exercise 4b only
-        if os.environ.get("OUTPUT_STATUS") is not None:
-            print(message + "\n", flush=True)
 
     def set_window_url(self, url):
         """
@@ -376,6 +401,20 @@ class Browser(QMainWindow):
                 os.path.dirname(__file__)), "server/tls_things/server.crt")
         elif "REQUESTS_CA_BUNDLE" in os.environ:
             del os.environ["REQUESTS_CA_BUNDLE"]
+
+    def setup_fuzzer_handling(self):
+        """
+        Ignore this function - it's used to set up
+        fuzzing for some of the later exercises.
+        """
+        self.reader, self.writer = os.pipe()
+        signal.signal(signal.SIGHUP, lambda _s, _h: os.write(self.writer, b'a'))
+        notifier = QSocketNotifier(self.reader, QSocketNotifier.Type.Read, self)
+        notifier.setEnabled(True)
+        def signal_received():
+            os.read(self.reader, 1)
+            window.go_button_clicked()
+        notifier.activated.connect(signal_received)
 
 
 #########################################

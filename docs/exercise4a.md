@@ -18,6 +18,8 @@ Any of the following counts as a success:
 Rules:
 * You can only do this by *altering the HTML content of the web page*. Remember,
   you're a website operator. You *cannot* change the browser code.
+* You *must not* look in the `html_table.py` file, because that's for
+  a subsequent exercise.
 
 > [!TIP]
 > If you find a bug which makes one website look like another one,
