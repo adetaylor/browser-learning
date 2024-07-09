@@ -17,7 +17,7 @@
 # Simple demo python web browser. Lacks all sorts of important features.
 
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QSizePolicy
-from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier
+from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier, QTimer
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
 import requests
 import os
@@ -432,6 +432,13 @@ if len(sys.argv) > 1:
 # Create the one (and only) example of our Browser class.
 window = Browser(initial_url)
 window.show()
+
+# Every 100 msec, check if we've been asked to reload -
+# this is only relevant for exercise 4b and works around a bug
+# in the GUI toolkit.
+timer = QTimer()
+timer.timeout.connect(lambda: None)
+timer.start(100)
 
 # The "event loop". An event is something like a click or the user
 # typing something. Keep handling those events from the user until
