@@ -64,7 +64,7 @@ class Renderer(HTMLParser, QWidget):
         """
         return QSize(800, 400)
 
-    def mouseReleaseEvent(self, event: QMouseEvent | None) -> None:
+    def mouseReleaseEvent(self, event) -> None:
         """
         Handle a click somewhere in the renderer area. See if it
         matches any known link.
