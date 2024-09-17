@@ -45,3 +45,10 @@ below.
   browser.
 * [Exercise 4b](docs/exercise4b.md): Write a program that finds bugs in another program
   (a "fuzzer").
+
+## Related projects
+
+If you enjoyed this project, eee also [browser.engineering](https://browser.engineering/),
+another Python demonstration browser! browser.engineering goes much further than this
+browser - it includes JavaScript, CSS etc. - with commensurately more complex code and
+runtime needs.
