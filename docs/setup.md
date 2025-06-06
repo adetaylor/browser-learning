@@ -29,6 +29,13 @@ python3 -m venv venv
 python3 -m pip install -r src/requirements.txt
 ```
 
+## Computers without a command prompt
+
+If you have a school computer with command prompt blocked but access to IDLE, do this:
+
+* In IDLE open a file. Navigate to `src` then open `install-prerequisites.py`
+* Run it
+
 ## Other types of machine
 
 Do what's required to install:
