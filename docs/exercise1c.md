@@ -16,6 +16,8 @@ Here's how to run the server:
 
 `python3 src/server/http_server.py`
 
+(Or run it from IDLE just like you did the browser.)
+
 Then use the browser to visit (exactly):
 
 `http://localhost:8000/exercise1c.html`
