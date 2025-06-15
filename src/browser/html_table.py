@@ -75,6 +75,9 @@ class HTMLTable:
                 for n, cell in enumerate(row):
                     (_, height) = draw_at(current_x_pos, y_pos, cell)
                     max_height = max(max_height, height)
-                    current_x_pos += column_widths[n]
+                    if len(column_widths) > n:
+                        current_x_pos += column_widths[n]
+                    else:
+                        current_x_pos += 100
             y_pos += max_height + 10 # padding
         return y_pos
