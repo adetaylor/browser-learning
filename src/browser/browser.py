@@ -337,7 +337,7 @@ class Browser(QMainWindow):
         """
         Called when a link on the page was clicked.
         """
-        if not ':' in url:
+        if not url.startswith('http'):
             # The hyperlink was a relative URL, e.g. just "some_page.html".
             # We need to change that into an absolute URL, e.g.
             # https://en.wikipedia.org/some_page.html
