@@ -19,7 +19,6 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 import threading
 import subprocess
-import signal
 import random
 import sys
 
@@ -31,7 +30,15 @@ def generate_testcase():
     x = random.randrange(0, 7)
     return "<h%d>Test header</h%d>" % (x, x)
 
+####################################################
 # You should not need to modify anything below here
+####################################################
+
+try:
+    import signal
+    signals_available = True
+except ImportError:
+    signals_available = False # we're probably running on Windows
 
 testcase = ""
 running = True
@@ -44,7 +51,8 @@ def signal_handler(sig, frame):
     running = False
     sys.exit(0)
 
-signal.signal(signal.SIGINT, signal_handler)
+if signals_available:
+    signal.signal(signal.SIGINT, signal_handler)
 
 class FuzzerRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -82,8 +90,10 @@ while running:
     render_completed = False
     if first:
         first = False
-    else:
+    elif signals_available:
         browser_proc.send_signal(signal.SIGHUP)
+    else:
+        print("Press Go in the browser.")
     while browser_proc.poll() is None and running and not render_completed:
         try:
             line = browser_proc.stdout.readline()
