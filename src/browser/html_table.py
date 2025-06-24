@@ -33,17 +33,24 @@ class HTMLTable:
     
     def handle_tr_start(self):
         self.rows.append(list())
-    
+
     def handle_td_start(self):
         if len(self.rows) == 0: # no tr was found
-            return
-        self.rows[-1].append("")
+            self.rows.append([""])
+        else:
+            self.rows[-1].append("")
+
+    def handle_th_start(self):
+        if len(self.rows) == 0: # no tr was found
+            self.rows.append([None])
+        else:
+            self.rows[-1].append("")
 
     def handle_data(self, data):
         if len(self.rows) == 0: # no tr was found
-            return
+            self.rows.append(list())
         if len(self.rows[-1]) == 0: # no td was found
-            return
+            self.handle_td_start() # so pretend
         self.rows[-1][-1] += data
 
     def handle_table_end(self, initial_y_pos, draw_at):
@@ -78,6 +85,7 @@ class HTMLTable:
                     if len(column_widths) > n:
                         current_x_pos += column_widths[n]
                     else:
-                        current_x_pos += 100
+                        # The first row had no such column, just make up a width...
+                        current_x_pos += 250
             y_pos += max_height + 10 # padding
         return y_pos

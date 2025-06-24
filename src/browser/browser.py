@@ -150,6 +150,8 @@ class Renderer(HTMLParser, QWidget):
                 self.table.handle_tr_start()
             if tag == 'td':
                 self.table.handle_td_start()
+            if tag == 'th':
+                self.table.handle_th_start()
             return
         if tag == 'b' or tag == 'strong':
             self.is_bold = True
