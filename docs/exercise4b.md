@@ -1,4 +1,4 @@
-# Exercise 4a: find security bugs (automatically)
+# Exercise 4b: find security bugs (automatically)
 
 Congratulations! If you're reading this, you must have successfully found all
 the hidden security bugs in the previous exercise.
