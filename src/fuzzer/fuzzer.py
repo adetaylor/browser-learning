@@ -18,6 +18,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 import os
 import threading
+import signal
 import subprocess
 import random
 import sys
@@ -34,12 +35,6 @@ def generate_testcase():
 # You should not need to modify anything below here
 ####################################################
 
-try:
-    import signal
-    signals_available = True
-except ImportError:
-    signals_available = False # we're probably running on Windows
-
 testcase = ""
 running = True
 exited_intentionally = False
@@ -51,7 +46,7 @@ def signal_handler(sig, frame):
     running = False
     sys.exit(0)
 
-if signals_available:
+if hasattr(signal, "SIGINT"):
     signal.signal(signal.SIGINT, signal_handler)
 
 class FuzzerRequestHandler(BaseHTTPRequestHandler):
@@ -79,7 +74,7 @@ url = "http://localhost:8001/testcase.html"
 
 browserenv = os.environ
 browserenv["OUTPUT_STATUS"] = "1"
-browser_proc = subprocess.Popen(stdout=subprocess.PIPE, args=[browser_path, url], env=browserenv, encoding="utf8")
+browser_proc = subprocess.Popen([sys.executable, browser_path, url], stdout=subprocess.PIPE, env=browserenv, encoding="utf8")
 
 first = True
 
@@ -90,7 +85,7 @@ while running:
     render_completed = False
     if first:
         first = False
-    elif signals_available:
+    elif hasattr(signal, "SIGHUP"):
         browser_proc.send_signal(signal.SIGHUP)
     else:
         print("Press Go in the browser.")
