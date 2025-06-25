@@ -22,16 +22,11 @@ from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier, QTimer
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
 import requests
 import os
+import signal
 import sys
 import html_table # do not look inside this file, that would be cheating on a later exercise
 from html.parser import HTMLParser
 from urllib.parse import urlparse
-# The next import is only available on some types of computer.
-try:
-    import signal
-    signals_available = True
-except ImportError:
-    signals_available = False # we're probably running on Windows
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
 FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
@@ -416,7 +411,7 @@ class Browser(QMainWindow):
         fuzzing for some of the later exercises.
         """
         self.reader, self.writer = os.pipe()
-        if signals_available:
+        if hasattr(signal, "SIGHUP"):
             signal.signal(signal.SIGHUP, lambda _s, _h: os.write(self.writer, b'a'))
         notifier = QSocketNotifier(self.reader, QSocketNotifier.Type.Read, self)
         notifier.setEnabled(True)
