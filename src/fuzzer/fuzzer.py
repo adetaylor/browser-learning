@@ -28,7 +28,7 @@ def generate_testcase():
     Generate some HTML to try in the browser
     """
     # TODO: Modify this code for the exercises
-    x = random.randrange(0, 7)
+    x = random.randrange(1, 7)
     return "<h%d>Test header</h%d>" % (x, x)
 
 ####################################################
