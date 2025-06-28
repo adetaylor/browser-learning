@@ -18,8 +18,8 @@
 
 # Import all the libraries we're going to use.
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QSizePolicy
-from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier, QTimer
-from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
+from PyQt6.QtCore import QSettings, Qt, QPoint, QSize
+from PyQt6.QtGui import QFont, QPainter, QFontMetrics
 import requests
 import exercise_helpers
 import os
