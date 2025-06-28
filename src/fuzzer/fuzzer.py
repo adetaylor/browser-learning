@@ -22,6 +22,11 @@ import signal
 import subprocess
 import random
 import sys
+try:
+    import win32event
+    windows_events_available = True
+except:
+    windows_events_available = False
 
 def generate_testcase():
     """
@@ -78,6 +83,10 @@ browser_proc = subprocess.Popen([sys.executable, browser_path, url], stdout=subp
 
 first = True
 
+if windows_events_available:
+    # create event by name
+    event = win32event.CreateEvent(None, False, False, "PYTHON_BROWSER_RELOAD")
+
 while running:
     testcase = generate_testcase()
     print("Trying %s" % testcase)
@@ -87,6 +96,8 @@ while running:
         first = False
     elif hasattr(signal, "SIGHUP"):
         browser_proc.send_signal(signal.SIGHUP)
+    elif windows_events_available:
+        win32event.SetEvent(event)
     else:
         print("Press Go in the browser.")
     while browser_proc.poll() is None and running and not render_completed:

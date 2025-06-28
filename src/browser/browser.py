@@ -27,6 +27,12 @@ import sys
 import html_table # do not look inside this file, that would be cheating on a later exercise
 from html.parser import HTMLParser
 from urllib.parse import urlparse
+try:
+    import win32event
+    windows_events_available = True
+    from PyQt6.QtCore import QWinEventNotifier
+except:
+    windows_events_available = False
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
 FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
@@ -443,6 +449,11 @@ window.show()
 timer = QTimer()
 timer.timeout.connect(lambda: None)
 timer.start(100)
+
+if windows_events_available:
+    event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
+    win_event_notifier = QWinEventNotifier(event)
+    win_event_notifier.activated.connect(lambda: window.go_button_clicked())
 
 # The "event loop". An event is something like a click or the user
 # typing something. Keep handling those events from the user until
