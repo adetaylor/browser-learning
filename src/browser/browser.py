@@ -21,22 +21,15 @@ from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHB
 from PyQt6.QtCore import QSettings, Qt, QPoint, QSize, QSocketNotifier, QTimer
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QFontMetrics
 import requests
+import exercise_helpers
 import os
-import signal
 import sys
-import html_table # do not look inside this file, that would be cheating on a later exercise
+import html_table
 from html.parser import HTMLParser
 from urllib.parse import urlparse
-try:
-    import win32event
-    windows_events_available = True
-    from PyQt6.QtCore import QWinEventNotifier
-except:
-    windows_events_available = False
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
 FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
-
 
 class Renderer(HTMLParser, QWidget):
     """
@@ -333,7 +326,9 @@ class Browser(QMainWindow):
         else:
             self.navigate(initial_url)
         self.set_window_url(initial_url)
-        self.setup_fuzzer_handling() # ignore
+        # Setup stuff for some of the later exercises - ignore this next line
+        # entirely.
+        exercise_helpers.setup_fuzzer_handling(self)
 
     def go_button_clicked(self):
         """
@@ -380,7 +375,9 @@ class Browser(QMainWindow):
         self.settings.setValue("url", url)
         self.current_url = url
         self.set_status('Status: loading...')
-        self.setup_encryption(url)
+        # Ignore the next line. It does boring stuff related to
+        # some of the later exercises.
+        exercise_helpers.setup_encryption(url)
         # Connect over the network to a web server to get the HTML
         # at this URL.
         try:
@@ -400,33 +397,6 @@ class Browser(QMainWindow):
         self.renderer.set_html(page_html)
         self.set_status('Status: OK')
 
-    def setup_encryption(self, url):
-        """
-        Ignore this function - it's used to set up
-        encryption for some of the later exercises.
-        """
-        if "localhost" in url:
-            os.environ["REQUESTS_CA_BUNDLE"] = os.path.join(os.path.dirname(
-                os.path.dirname(__file__)), "server/tls_things/server.crt")
-        elif "REQUESTS_CA_BUNDLE" in os.environ:
-            del os.environ["REQUESTS_CA_BUNDLE"]
-
-    def setup_fuzzer_handling(self):
-        """
-        Ignore this function - it's used to set up
-        fuzzing for some of the later exercises.
-        """
-        self.reader, self.writer = os.pipe()
-        if hasattr(signal, "SIGHUP"):
-            signal.signal(signal.SIGHUP, lambda _s, _h: os.write(self.writer, b'a'))
-        notifier = QSocketNotifier(self.reader, QSocketNotifier.Type.Read, self)
-        notifier.setEnabled(True)
-        def signal_received():
-            os.read(self.reader, 1)
-            window.go_button_clicked()
-        notifier.activated.connect(signal_received)
-
-
 #########################################
 # Main program here
 #########################################
@@ -442,18 +412,6 @@ if len(sys.argv) > 1:
 # Create the one (and only) example of our Browser class.
 window = Browser(initial_url)
 window.show()
-
-# Every 100 msec, check if we've been asked to reload -
-# this is only relevant for exercise 4b and works around a bug
-# in the GUI toolkit.
-timer = QTimer()
-timer.timeout.connect(lambda: None)
-timer.start(100)
-
-if windows_events_available:
-    event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
-    win_event_notifier = QWinEventNotifier(event)
-    win_event_notifier.activated.connect(lambda: window.go_button_clicked())
 
 # The "event loop". An event is something like a click or the user
 # typing something. Keep handling those events from the user until
