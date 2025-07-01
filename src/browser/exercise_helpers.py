@@ -29,22 +29,23 @@ def setup_fuzzer_handling(window):
     Ignore this function - it's used to set up
     fuzzing for some of the later exercises.
     """
-    reader, writer = os.pipe()
     if hasattr(signal, "SIGHUP"):
+        reader, writer = os.pipe()
         signal.signal(signal.SIGHUP, lambda _s, _h: os.write(writer, b'a'))
-        notifier = QSocketNotifier(reader, QSocketNotifier.Type.Read, window)
-        notifier.setEnabled(True)
+        window.notifier = QSocketNotifier(reader, QSocketNotifier.Type.Read, window)
+        window.notifier.setEnabled(True)
         def signal_received():
             os.read(reader, 1)
             window.go_button_clicked()
-        notifier.activated.connect(signal_received)
+        window.notifier.activated.connect(signal_received)
         # Every 100 msec, check if we've been asked to reload -
         # this is only relevant for exercise 4b and works around a bug
         # in the GUI toolkit.
-        timer = QTimer()
-        timer.timeout.connect(lambda: None)
-        timer.start(100)
+        window.timer = QTimer()
+        window.timer.timeout.connect(lambda: None)
+        window.timer.start(100)
     elif windows_events_available:
-        event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
-        win_event_notifier = QWinEventNotifier(event)
-        win_event_notifier.activated.connect(lambda: window.go_button_clicked())
+        window.event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
+        window.win_event_notifier = QWinEventNotifier(int(window.event))
+        window.win_event_notifier.activated.connect(lambda: window.go_button_clicked())
+        window.win_event_notifier.setEnabled(True)
