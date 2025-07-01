@@ -123,9 +123,8 @@ class Renderer(HTMLParser, QWidget):
         # handle_data and handle_endtag depending on what's inside self.html.
         self.feed(self.html)
         self.painter = None
-        # Ignore the following two lines, they're used for exercise 4b only
-        if os.environ.get("OUTPUT_STATUS") is not None:
-            print("Rendering completed\n", flush=True)
+        # Ignore the following line, it's for exercise 4b only.
+        exercise_helpers.inform_fuzzer_paint_finished(self.browser)
 
     def handle_starttag(self, tag, attrs):
         """
@@ -377,7 +376,7 @@ class Browser(QMainWindow):
         self.set_status('Status: loading...')
         # Ignore the next line. It does boring stuff related to
         # some of the later exercises.
-        exercise_helpers.setup_encryption(url)
+        exercise_helpers.prepare_for_load(url, self)
         # Connect over the network to a web server to get the HTML
         # at this URL.
         try:

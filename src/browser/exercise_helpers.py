@@ -13,7 +13,7 @@ try:
 except:
     windows_events_available = False
 
-def setup_encryption(url):
+def prepare_for_load(url, window):
     """
     Ignore this function - it's used to set up
     encryption for some of the later exercises.
@@ -23,12 +23,23 @@ def setup_encryption(url):
             os.path.dirname(__file__)), "server/tls_things/server.crt")
     elif "REQUESTS_CA_BUNDLE" in os.environ:
         del os.environ["REQUESTS_CA_BUNDLE"]
+    window.load_in_progress = True
+
+def inform_fuzzer_paint_finished(window):
+    """
+    Ignore this function - it's used to talk to the fuzzer in exercise 4b.
+    """
+    if window.load_in_progress:
+        if os.environ.get("OUTPUT_STATUS") is not None:
+            print("Rendering completed\n", flush=True)
+        window.load_in_progress = False
 
 def setup_fuzzer_handling(window):
     """
     Ignore this function - it's used to set up
     fuzzing for some of the later exercises.
     """
+    window.load_in_progress = True
     if hasattr(signal, "SIGHUP"):
         reader, writer = os.pipe()
         signal.signal(signal.SIGHUP, lambda _s, _h: os.write(writer, b'a'))
