@@ -56,7 +56,10 @@ def setup_fuzzer_handling(window):
         window.timer.timeout.connect(lambda: None)
         window.timer.start(100)
     elif windows_events_available:
-        window.event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
-        window.win_event_notifier = QWinEventNotifier(int(window.event))
-        window.win_event_notifier.activated.connect(lambda: window.go_button_clicked())
-        window.win_event_notifier.setEnabled(True)
+        try:
+            window.event = win32event.OpenEvent(win32event.EVENT_ALL_ACCESS, 0, "PYTHON_BROWSER_RELOAD")
+            window.win_event_notifier = QWinEventNotifier(int(window.event))
+            window.win_event_notifier.activated.connect(lambda: window.go_button_clicked())
+            window.win_event_notifier.setEnabled(True)
+        except:
+            pass # not fuzzing
