@@ -22,7 +22,6 @@ from PyQt6.QtCore import QSettings, Qt, QPoint, QSize
 from PyQt6.QtGui import QFont, QPainter, QFontMetrics
 import requests
 import exercise_helpers
-import os
 import sys
 import html_table
 from html.parser import HTMLParser
