@@ -16,7 +16,7 @@ Here's how to run the server:
 
 `python3 src/server/http_server.py`
 
-(Or run it from IDLE just like you did the browser.)
+(Or, on Windows, run it from IDLE just like you did the browser.)
 
 Then use the browser to visit (exactly):
 
@@ -24,10 +24,11 @@ Then use the browser to visit (exactly):
 (change `exercise1c.html` to whatever you called your page)
 
 > [!TIP]
-> You need to run the browser and the server at the same time. The best way to
+> You need to run the browser and the server at the same time. On Linux, the best way to
 > do this is to type Control-Z, and then type `bg`, which will run the browser
 > in the background. (You can see this by typing `jobs`.) Another way is to
 > open another terminal and then run `cd browser-learning` then `. venv/bin/activate`.
+> On Windows, you may have to run two command prompts or run IDLE twice.
 
 Ensure you can see bold text and hyperlinks.
 
