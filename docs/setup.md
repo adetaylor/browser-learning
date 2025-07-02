@@ -33,6 +33,17 @@ pip3 install -r src/requirements.txt
 3. Keep the terminal open - you'll need it to run commands. (If you open a new terminal, run `cd browser-learning` and then `. venv/bin/activate`)
 4. From the main menu, also open Visual Studio code.
 
+## Windows
+
+1. From `https://github.com/adetaylor/browser-learning`, click Code and download zip.
+2. Find the downloaded file
+3. Right-click and go to Extract All
+4. Open the resulting folder and right-click, choose Open in Terminal
+5. Type the following commands, pressing return after each one
+  * `cmd`
+  * `pip install -r src\requirements.txt` (if this doesn't work, you might need to `cd browser-learning` first)
+  * `pip install -r src\requirements-win.txt`
+
 ## Computers without a command prompt
 
 If you have a school computer with command prompt blocked but access to IDLE, do this:

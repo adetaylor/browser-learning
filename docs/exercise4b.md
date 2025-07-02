@@ -11,7 +11,7 @@ finds security bugs by testing another program is called a "fuzzer".
 Do this:
 
 * Do *NOT* look at the code for `src/browser/html_table.py`. That is cheating!
-* Open `src/fuzzer/fuzzer.py` in VSCode and read it.
+* Open `src/fuzzer/fuzzer.py` in your editor and read the first bit.
 * Run `python3 src/fuzzer/fuzzer.py`. Watch what it does.
 * Control-C to cancel it.
 

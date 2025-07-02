@@ -24,3 +24,15 @@ libraries using `pip`. You should carefully run through the [setup requirements]
 before deciding if this project is right for you.
 
 You may find [solutions at this page](solutions.md).
+
+# Timings
+
+Assuming you take reasonable time (30 minutes) on various bits of introduction
+and talk, and 20 minutes for setup, here's how much of the exercises can be done with
+a capable GCSE class:
+
+* 3 hours: exercise 1a, 1b, 1c, 2a, 4a only.
+* 4 hours, if they're an especially capable group: add 2c
+* > 4 hours: add 4b
+* Whole day: add the rest (note that exercise 3 can't be done on Windows).
+

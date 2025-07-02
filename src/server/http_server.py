@@ -25,4 +25,5 @@ class PagesDirectoryRequestHandler(SimpleHTTPRequestHandler):
 
 httpd = HTTPServer(('localhost', 8000), PagesDirectoryRequestHandler)
 
+print("HTTP server now running - use your browser to load pages from this server")
 httpd.serve_forever()

@@ -1,5 +1,10 @@
 # Exercise 1b: Using our own browser
 
+> [!TIP]
+> If you're using Windows, you might need to run the browser a slightly
+> different way than the instructions below, e.g.
+> `python src\browser\browser.py`
+
 * Do the same in our own browser, by running `python3 src/browser/browser.py`.
   (If you're using IDLE you can open the file from within IDLE and then run it.)
 * Does it support:
@@ -7,10 +12,12 @@
   * _Italic_ text
   * Hyperlinks
 * Open up the browser source code (open the file `src/browser/browser.py`) -
-  it's recommended to use Visual Studio Code. (Specifically, if you're using a Chromebook,
-  choose File -> Open Folder, click browser-learning once, and click Open. You can then use
-  the side panel to navigate to `src/browser/browser.py`). You can also open the file in
-  IDLE instead.
+  it's recommended to use Visual Studio Code. Specifically,
+  * If you're using a Chromebook,
+    choose File -> Open Folder, click browser-learning once, and click Open. You can then use
+    the side panel to navigate to `src/browser/browser.py`).
+  * If you're using Windows, right-click the file icon and choose Open With ->
+    Visual Studio Code, or some other editor.
   (Incidentally, `src` is short for "source code".)
 * Find where it handles these tags. See which is missing.
 

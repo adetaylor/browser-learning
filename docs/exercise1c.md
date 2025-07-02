@@ -6,6 +6,11 @@ there is `pages`.
 Create a new HTML file in there. Use the (few!) types of tag supported by
 the browser.
 
+> [!TIP]
+> To create a new file, it might be easiest to duplicate the existing
+> `exercise1c.html` file, rename it to something else, and then edit
+> its contents.
+
 You should make sure you know how to add these tags:
 * `a href`
 * `b`
@@ -24,11 +29,11 @@ Then use the browser to visit (exactly):
 (change `exercise1c.html` to whatever you called your page)
 
 > [!TIP]
-> You need to run the browser and the server at the same time. On Linux, the best way to
-> do this is to type Control-Z, and then type `bg`, which will run the browser
+> You need to run the browser and the server at the same time. If you're using
+> a Chromebook, the best way to do this is to type Control-Z, and then type `bg`, which will run the browser
 > in the background. (You can see this by typing `jobs`.) Another way is to
 > open another terminal and then run `cd browser-learning` then `. venv/bin/activate`.
-> On Windows, you may have to run two command prompts or run IDLE twice.
+> If you're using Windows, open a second terminal just like you did the first.
 
 Ensure you can see bold text and hyperlinks.
 

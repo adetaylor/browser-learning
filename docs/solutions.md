@@ -2,6 +2,13 @@
 
 Example solutions (there may be others!)
 
+# Exercise 2a
+
+Find all the places it mentions bold support, and add equivalent support for italic.
+In the final place where boldness is used to alter the "weight" of the text, you'll
+need to do something else for italic. Read the line after that carefully and see if
+you can see where italic is used.
+
 # Exercise 4b
 
 ```

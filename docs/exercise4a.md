@@ -42,5 +42,6 @@ There are (at least) three different crashes to find, plus one other bug.
 [The browser maker will pay you!](https://bughunters.google.com/about/rules/5745167867576320/chrome-vulnerability-reward-program-rules#reward-amounts).
 
 > [!TIP]
-> Not all _crashes_ are security bugs - it depends whether attackers can
-> use them to steal some data instead of crashing.
+> In a real browser, not all _crashes_ are security bugs - it depends whether attackers can
+> use them to steal some data instead of crashing. In our demo browser,
+> any crash counts as a win.

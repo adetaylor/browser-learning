@@ -52,4 +52,5 @@ if not os.path.exists(server_certificate_file):
 
 context.load_cert_chain(certfile=server_certificate_file)
 httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+print("HTTPS server now running - use your browser to load pages from this server")
 httpd.serve_forever()
