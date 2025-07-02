@@ -274,11 +274,11 @@ class Renderer(HTMLParser, QWidget):
         # Strikethrough - draw a line over the text but only
         # if we don't cover more than 50% of it, we don't want it illegible
         if self.is_strikethrough:
-           fraction_of_text_covered = 6 / self.font_size
-           if fraction_of_text_covered <= 0.5:
-               strikethrough_line_y_pos = y_pos + (self.font_size / 2) - 80
-               self.canvas.create_line(x_pos, strikethrough_line_y_pos,
-                                       x_pos + text_width, strikethrough_line_y_pos)
+            fraction_of_text_covered = 6 / self.font_size
+            if fraction_of_text_covered <= 0.5:
+                strikethrough_line_y_pos = int(y_pos + (self.font_size / 2))
+                self.painter.drawLine(x_pos, strikethrough_line_y_pos,
+                                        x_pos + text_width, strikethrough_line_y_pos)
         return (text_width, text_height)
 
 
