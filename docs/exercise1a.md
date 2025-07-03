@@ -6,8 +6,7 @@
   * Some text which is **bold** (remember what it says)
   * Some text which is _italic_ (remember what it says)
   * Some text which is a hyperlink (remember what it says)
-* Choose the "view source" option (or "inspect element")
-* Find the text you found
+* Right-click and choose "Inspect"
 
 Here's what's happening:
 
