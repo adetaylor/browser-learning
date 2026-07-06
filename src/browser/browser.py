@@ -25,7 +25,7 @@ import exercise_helpers
 import sys
 import html_table
 from html.parser import HTMLParser
-from urllib.parse import urlparse
+from urllib.parse import urljoin
 
 # How much bigger to make the font when we come across <h1> to <h6> tags
 FONT_SIZE_INCREASES_FOR_HEADERS_1_TO_6 = [10, 6, 4, 3, 2, 1]
@@ -345,8 +345,7 @@ class Browser(QMainWindow):
             # https://en.wikipedia.org/some_page.html
             # by combining it with parts of the currently-viewed URL.
             # (This is a simplification of the real checks for relative URLs...)
-            current_url_parts = urlparse(self.current_url)
-            url = current_url_parts._replace(path=url).geturl()
+            url = urljoin(self.current_url, url)
         # fill in the URL bar with the new URL
         self.set_window_url(url)
         self.navigate(url)
