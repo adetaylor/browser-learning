@@ -21,19 +21,17 @@ Here's how to run the server:
 
 `python3 src/server/http_server.py`
 
-(Or, on Windows, run it from IDLE just like you did the browser.)
-
 Then use the browser to visit (exactly):
 
 `http://localhost:8000/exercise1c.html`
 (change `exercise1c.html` to whatever you called your page)
 
 > [!TIP]
-> You need to run the browser and the server at the same time. If you're using
+> You need to run the browser and the server *at the same time*. If you're using
 > a Chromebook, the best way to do this is to type Control-Z, and then type `bg`, which will run the browser
 > in the background. (You can see this by typing `jobs`.) Another way is to
 > open another terminal and then run `cd browser-learning` then `. venv/bin/activate`.
-> If you're using Windows, open a second terminal just like you did the first.
+> If you're using Windows, open a second terminal just like you did the first, and you may need to `cd` again.
 
 Ensure you can see bold text and hyperlinks.
 
