@@ -19,62 +19,34 @@ What if someone is listening in?
 
 ```mermaid
 graph LR;
-    Browser-- request -->Hacker;
+    Browser-- request -->Spy;
     Hacker --> Server
-    Server-- response -->Hacker;
+    Server-- response -->Spy;
     Hacker-->Browser;
 ```
 
-Let's be such a hacker! We're going to use a tool called `tcpdump` which can
-spy on *all the network traffic*.
-
-(`tcpdump` means `TCP` dump. `TCP` is the ["transmission control protocol", which
-is an agreement about how computers can communicate over the internet.](https://en.wikipedia.org/wiki/Transmission_Control_Protocol))
+Let's be such a hacker! We're going to use a tool called `spy.py` which can
+spy on the requests and responses as they go past.
 
 ## Getting started
 
 Make an HTML page within `src/server/pages/crush.html` with your secret crush, in HTML.
 
-## Running `tcpdump`
+## Running `spy.py`
 
-The computer you're using probably has several **interfaces**. That is, ways
-it can talk over the network. It might have a wired network socket, and it might
-also be able to work on wireless ("WiFi" networks).
+In a previous exercise, you had both the browser and the server running at the
+same time. You may have had two terminals running. You will need a third for this
+- don't forget to `cd` if necessary in the new terminal.
 
-Run this command to find out what interfaces you have:
+So, while you _still have the browser and server running_, also start
 
-```
-sudo tcpdump -D
-```
-
-> [!TIP]
-> Like in exercise 1, you need to run several commands at once. Once
-> a command is running, the terminal won't act on other commands you
-> give it. You can create
-> several terminal windows to run several commands, or after you've run a
-> command you can press Control-Z and then run the command `bg`
-
-Hopefully, one of them is labelled "loopback". That's the one we want today,
-which enables us to spy on a browser and server running on your computer.
-What's it called? It might be called `lo`. Remember that.
-
-Now run
-
-```
-sudo tcpdump -i lo -A 'tcp port 8000'
-```
-
-(You might need to swap `lo` with whatever your loopback interface was called.)
-
-> [!TIP]
-> You can press the Up arrow to edit a command you previously ran.
-
-Imagine you're doing this on a computer that's somewhere in between the browser
-and server. It would work just the same way.
+`python3 src/spy/spy.py 8001 8000`
 
 ## Spying on an HTTP request
 
-Run the simple web browser. Navigate to `http://localhost:8000/crush.html`.
+Run the simple web browser. Navigate to `http://localhost:8001/crush.html`.
+
+Note that it's 8001 not 8000!
 
 You should see the HTTP request go past, and the response.
 
@@ -125,4 +97,13 @@ any of them could spy.
 
 What do we do?
 
-Type Control-C to zap `tcpdump` when you're finished.
+# What's with 8000 and 8001?
+
+These are "port numbers". Different applications on your computer might be "listening" for
+network connections on different "ports". Our server was listening on port 8000 - that's
+why it says 8000 within
+
+`http://localhost:8000/`.
+
+Our spy is listening on port 8001, and then it's passing on any connections to port 8000.
+So the data flows via the spy first and then onto the server.
