@@ -5,6 +5,11 @@
 > different way than the instructions below, e.g.
 > `python src\browser\browser.py`
 
+> [!TIP]
+> You might need to first open a terminal, and you might need to "change directory"
+> in that terminal to the place where you have all these exercises. For example,
+> `cd Downloads\browser-learning-main\browser-learning-main`
+
 * Do the same in our own browser, by running `python3 src/browser/browser.py`.
   (If you're using IDLE you can open the file from within IDLE and then run it.)
 * Does it support:
