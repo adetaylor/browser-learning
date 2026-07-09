@@ -1,13 +1,16 @@
 # Exercise 3b: encryption
 
+> [!TIP]
+> On Windows, you'll need to install something called `openssl` for this to work. Your teacher will tell you how.
+
+> [!TIP]
+> You'll need even more terminals open!
+
+
 Do the same thing, but:
 
 * Use `https_server.py` instead of `http_server.py`
-* Navigate to `https://localhost:4443/exercise1b.html` instead of `http://localhost:8000/exercise1b.html` (note _both_ the different number, and the extra `s` on the end of `http`)
-* Use a slightly different `tcpdump` command:
-
-```
-sudo tcpdump -i lo -A 'tcp port 4443'
-```
+* Use `spy.py 4444 4443` instead of `spy.py 8001 8000`
+* Navigate to `https://localhost:4444/crush.html` instead of `http://localhost:8001/crush.html` (note _both_ the different number, and the extra `s` on the end of `http`)
 
 What do you see now?
